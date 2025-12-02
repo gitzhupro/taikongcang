@@ -3,8 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智能硬件UI设计</title>
+    <!-- 核心SEO优化：标题与描述 -->
+    <title>智能硬件UI设计师 | 物联网、消费电子UX设计服务</title>
+    <meta name="description" content="专注为成长型智能硬件公司提供专业UI/UX设计。提升产品体验，助力商业增长。提供免费设计走查与案例参考。">
+    
+    <!-- Open Graph 基础标签 (增强社交媒体分享) -->
+    <meta property="og:title" content="智能硬件UI设计师 | 物联网、消费电子UX设计服务">
+    <meta property="og:description" content="专注为成长型智能硬件公司提供专业UI/UX设计。提升产品体验，助力商业增长。">
+    <meta property="og:type" content="website">
+    
+    <!-- 图标 -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>▶</text></svg>">
+    
     <style>
         /* 基础重置与变量 */
         :root {
@@ -127,6 +137,24 @@
             line-height: 1.5;
         }
         
+        /* 关键词强调部分 */
+        .keywords {
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            opacity: 0;
+            animation: fadeInUp 0.8s ease 0.5s forwards;
+        }
+        
+        .keywords span {
+            display: inline-block;
+            margin: 0.3rem;
+            padding: 0.2rem 0.6rem;
+            background-color: rgba(42, 95, 255, 0.08);
+            border-radius: 4px;
+            color: var(--accent-color);
+        }
+        
         /* 联系信息 */
         .contact {
             margin-top: 3rem;
@@ -203,36 +231,83 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        
+        /* 隐藏文本，仅供SEO */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
     </style>
 </head>
 <body>
+    <!-- 隐藏的SEO标题，强化关键词 -->
+    <h1 class="sr-only">智能硬件UI设计师，物联网产品UX设计，消费电子界面设计服务</h1>
+    
     <div class="container">
-        <h1 class="name">智能硬件 UI/UX 设计</h1>
-        <p class="title">专注于关键增长期与转型期硬件公司的体验设计</p>
+        <h2 class="name">智能硬件 UI/UX 设计</h2>
+        <p class="title">专注于关键增长期与转型期硬件公司的体验设计，助力产品成功</p>
+        
+        <!-- 关键词展示 -->
+        <div class="keywords">
+            <span>智能硬件UI</span>
+            <span>物联网产品体验</span>
+            <span>消费电子界面</span>
+            <span>硬件公司设计合作</span>
+            <span>用户体验设计服务</span>
+        </div>
         
         <div class="qr-section">
             <div class="qr-container">
-                <!-- 二维码将在这里显示 -->
+                <!-- 二维码 - 已优化ALT文本 -->
                 <img id="qrCode" 
                      src="WeChat.png" 
-                     alt="微信联系方式二维码"
+                     alt="添加微信，获取智能硬件UI设计案例与咨询服务二维码"
                      onerror="this.style.display='none'; document.getElementById('qrPlaceholder').style.display='flex';">
                 <div id="qrPlaceholder" class="qr-placeholder" style="display: none;">
                     请放置 WeChat.png 文件在网站根目录
                 </div>
             </div>
-            <p class="qr-caption">扫描二维码添加微信<br>获取设计案例与专业咨询</p>
+            <p class="qr-caption">扫描二维码添加微信，获取设计案例与专业咨询</p>
         </div>
         
         <div class="contact">
             <p>专注智能硬件、物联网、消费电子产品的用户体验设计</p>
-            <p>提供从交互原型到视觉落地的完整解决方案</p>
+            <p>提供从交互原型到视觉落地的完整设计解决方案</p>
+            <p>已服务多家成长型硬件科技公司，助力产品体验升级与商业增长</p>
         </div>
         
         <footer>
-            <p>© <span id="currentYear"></span> 简洁设计展示</p>
+            <p>© <span id="currentYear"></span> 智能硬件UI/UX设计服务 | 专业设计咨询</p>
         </footer>
     </div>
+
+    <!-- 结构化数据标记 (JSON-LD) - 重要SEO优化 -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "name": "智能硬件UI/UX设计",
+      "description": "专注于为关键增长期与转型期的硬件公司提供用户体验设计服务，包括智能硬件、物联网产品和消费电子产品的界面设计。",
+      "url": "https://your-username.github.io",
+      "provider": {
+        "@type": "Person",
+        "name": "智能硬件UI设计师"
+      },
+      "serviceType": ["UI Design", "UX Design", "交互设计"],
+      "areaServed": {
+        "@type": "Country",
+        "name": "China"
+      },
+      "keywords": "智能硬件UI设计,物联网产品体验,消费电子界面设计,硬件公司设计合作,UX设计服务"
+    }
+    </script>
 
     <script>
         // 设置当前年份
@@ -259,7 +334,6 @@
         //  prefers-color-scheme 变化监听
         const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
         darkModeMediaQuery.addListener(() => {
-            // 通过短暂切换类名触发CSS变量重新计算
             document.body.style.transition = 'background-color 0.3s ease';
         });
     </script>
