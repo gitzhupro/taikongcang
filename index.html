@@ -2,340 +2,137 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 核心SEO优化：标题与描述 -->
-    <title>智能硬件UI设计师 | 物联网、消费电子UX设计服务</title>
-    <meta name="description" content="专注为成长型智能硬件公司提供专业UI/UX设计。提升产品体验，助力商业增长。提供免费设计走查与案例参考。">
-    
-    <!-- Open Graph 基础标签 (增强社交媒体分享) -->
-    <meta property="og:title" content="智能硬件UI设计师 | 物联网、消费电子UX设计服务">
-    <meta property="og:description" content="专注为成长型智能硬件公司提供专业UI/UX设计。提升产品体验，助力商业增长。">
-    <meta property="og:type" content="website">
-    
-    <!-- 图标 -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>▶</text></svg>">
-    
+    <title>UIUX设计服务 | 智能硬件HMI与B端界面专家</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <!-- 关键 SEO -->
+    <meta name="keywords" content="UI设计,UX设计,智能硬件UI,HMI交互设计,B端UI设计,智能产品设计,UX设计服务,网站UI设计">
+    <meta name="description" content="专注智能硬件与B端产品的UI/UX设计团队，提供HMI交互、网站UI、品牌界面等一站式设计服务。">
     <style>
-        /* 基础重置与变量 */
-        :root {
-            --text-primary: #1a1a1a;
-            --text-secondary: #666;
-            --bg-color: #fefefe;
-            --accent-color: #2a5fff;
-            --border-color: #eaeaea;
-            --transition-speed: 0.3s;
-        }
-        
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --text-primary: #f0f0f0;
-                --text-secondary: #aaa;
-                --bg-color: #0a0a0a;
-                --border-color: #333;
-            }
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        html {
-            font-size: 18px;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            line-height: 1.6;
-            color: var(--text-primary);
-            background-color: var(--bg-color);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-        
-        body {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem 1rem;
-            transition: background-color var(--transition-speed);
-        }
-        
-        /* 主容器 */
-        .container {
-            max-width: 500px;
-            width: 100%;
-            text-align: center;
-            position: relative;
-        }
-        
-        /* 标题与描述 */
-        .name {
-            font-size: 1.8rem;
-            font-weight: 500;
-            letter-spacing: -0.02em;
-            margin-bottom: 0.5rem;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease forwards;
-        }
-        
-        .title {
-            font-size: 1.1rem;
-            font-weight: 400;
-            color: var(--text-secondary);
-            margin-bottom: 3rem;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease 0.2s forwards;
-        }
-        
-        /* 二维码区域 */
-        .qr-section {
-            margin: 2.5rem 0;
-            padding: 2rem;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease 0.4s forwards;
-        }
-        
-        .qr-container {
-            display: inline-block;
-            padding: 1.2rem;
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-            border: 1px solid var(--border-color);
-            transition: all var(--transition-speed) ease;
-            margin-bottom: 1.5rem;
-        }
-        
-        .qr-container:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
-        }
-        
-        #qrCode {
-            width: 180px;
-            height: 180px;
-            display: block;
-            object-fit: contain;
-        }
-        
-        .qr-placeholder {
-            width: 180px;
-            height: 180px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%);
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            border-radius: 4px;
-        }
-        
-        .qr-caption {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
-        
-        /* 关键词强调部分 */
-        .keywords {
-            margin: 1.5rem 0;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            opacity: 0;
-            animation: fadeInUp 0.8s ease 0.5s forwards;
-        }
-        
-        .keywords span {
-            display: inline-block;
-            margin: 0.3rem;
-            padding: 0.2rem 0.6rem;
-            background-color: rgba(42, 95, 255, 0.08);
-            border-radius: 4px;
-            color: var(--accent-color);
-        }
-        
-        /* 联系信息 */
-        .contact {
-            margin-top: 3rem;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease 0.6s forwards;
-        }
-        
-        .contact p {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.3rem;
-        }
-        
-        /* 页脚 */
-        footer {
-            margin-top: 4rem;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            opacity: 0;
-            animation: fadeInUp 0.8s ease 0.8s forwards;
-        }
-        
-        /* 动画 */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        /* 响应式调整 */
-        @media (max-width: 600px) {
-            html {
-                font-size: 16px;
-            }
-            
-            .container {
-                padding: 0 0.5rem;
-            }
-            
-            .qr-section {
-                padding: 1.5rem 0;
-            }
-            
-            #qrCode, .qr-placeholder {
-                width: 160px;
-                height: 160px;
-            }
-        }
-        
-        /* 二维码加载状态 */
-        .qr-loading {
-            position: relative;
-        }
-        
-        .qr-loading::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 40px;
-            height: 40px;
-            margin: -20px 0 0 -20px;
-            border: 2px solid var(--border-color);
-            border-top-color: var(--accent-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        /* 隐藏文本，仅供SEO */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
-        }
+        /* ========== 极简 reset ========== */
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:#fff;color:#222;line-height:1.6}
+        img{max-width:100%;display:block}
+        a{text-decoration:none;color:inherit}
+        /* ========== 动画 ========== */
+        @keyframes fadeDown{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:none}}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+        /* ========== 导航 ========== */
+        header{position:fixed;top:0;left:0;right:0;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.05);z-index:9}
+        nav{display:flex;align-items:center;justify-content:space-between;max-width:1100px;margin:auto;padding:0 20px;height:60px}
+        nav .logo{height:36px}
+        nav ul{display:flex;gap:28px;list-style:none;font-size:15px}
+        nav li{cursor:pointer;transition:.2s}
+        nav li:hover{color:#1a7cff}
+        /* ========== 首屏 ========== */
+        #hero{height:100vh;background:url(assets/hero.jpg) center/cover no-repeat;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff}
+        #hero h1{font-size:48px;font-weight:600;margin-bottom:20px;animation:fadeDown 1s ease}
+        #hero p{font-size:20px;animation:fadeUp 1s ease .2s both}
+        /* ========== 区块通用 ========== */
+        section{max-width:1100px;margin:80px auto;padding:0 20px}
+        h2{font-size:32px;margin-bottom:40px;text-align:center}
+        .grid{display:grid;gap:30px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+        .card{background:#f7f9fc;border-radius:8px;overflow:hidden;transition:.3s}
+        .card:hover{transform:translateY(-6px);box-shadow:0 10px 20px rgba(0,0,0,.08)}
+        .card img{width:100%;height:180px;object-fit:cover}
+        .card .txt{padding:20px}
+        .card h3{font-size:18px;margin-bottom:10px}
+        /* ========== 长图作品 ========== */
+        #works img{width:100%;border-radius:8px;margin-bottom:30px}
+        /* ========== 页脚 ========== */
+        footer{text-align:center;padding:40px 0;font-size:14px;color:#999}
     </style>
 </head>
 <body>
-    <!-- 隐藏的SEO标题，强化关键词 -->
-    <h1 class="sr-only">智能硬件UI设计师，物联网产品UX设计，消费电子界面设计服务</h1>
-    
-    <div class="container">
-        <h2 class="name">智能硬件 UI/UX 设计</h2>
-        <p class="title">专注于关键增长期与转型期硬件公司的体验设计，助力产品成功</p>
-        
-        <!-- 关键词展示 -->
-        <div class="keywords">
-            <span>智能硬件UI</span>
-            <span>物联网产品体验</span>
-            <span>消费电子界面</span>
-            <span>硬件公司设计合作</span>
-            <span>用户体验设计服务</span>
-        </div>
-        
-        <div class="qr-section">
-            <div class="qr-container">
-                <!-- 二维码 - 已优化ALT文本 -->
-                <img id="qrCode" 
-                     src="WeChat.png" 
-                     alt="添加微信，获取智能硬件UI设计案例与咨询服务二维码"
-                     onerror="this.style.display='none'; document.getElementById('qrPlaceholder').style.display='flex';">
-                <div id="qrPlaceholder" class="qr-placeholder" style="display: none;">
-                    请放置 WeChat.png 文件在网站根目录
-                </div>
-            </div>
-            <p class="qr-caption">扫描二维码添加微信，获取设计案例与专业咨询</p>
-        </div>
-        
-        <div class="contact">
-            <p>专注智能硬件、物联网、消费电子产品的用户体验设计</p>
-            <p>提供从交互原型到视觉落地的完整设计解决方案</p>
-            <p>已服务多家成长型硬件科技公司，助力产品体验升级与商业增长</p>
-        </div>
-        
-        <footer>
-            <p>© <span id="currentYear"></span> 智能硬件UI/UX设计服务 | 专业设计咨询</p>
-        </footer>
+<header>
+    <nav>
+        <img src="assets/logo.png" class="logo" alt="logo">
+        <ul>
+            <li data-to="hero">首页</li>
+            <li data-to="service">服务</li>
+            <li data-to="works">作品</li>
+            <li data-to="blog">文章</li>
+            <li data-to="contact">联系</li>
+        </ul>
+    </nav>
+</header>
+ 
+<section id="hero">
+    <div>
+        <h1 id="heroTitle">智能硬件UI · HMI设计专家</h1>
+        <p id="heroDesc">提供极致易用的B端与智能产品界面设计服务</p>
     </div>
-
-    <!-- 结构化数据标记 (JSON-LD) - 重要SEO优化 -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "ProfessionalService",
-      "name": "智能硬件UI/UX设计",
-      "description": "专注于为关键增长期与转型期的硬件公司提供用户体验设计服务，包括智能硬件、物联网产品和消费电子产品的界面设计。",
-      "url": "https://gitzhupro.github.io/taikongcang/",
-      "provider": {
-        "@type": "Person",
-        "name": "智能硬件UI设计师"
-      },
-      "serviceType": ["UI Design", "UX Design", "交互设计"],
-      "areaServed": {
-        "@type": "Country",
-        "name": "China"
-      },
-      "keywords": "智能硬件UI设计,物联网产品体验,消费电子界面设计,硬件公司设计合作,UX设计服务"
+</section>
+ 
+<section id="service">
+    <h2>核心服务</h2>
+    <div class="grid" id="serviceGrid"></div>
+</section>
+ 
+<section id="works">
+    <h2>精选作品</h2>
+    <div id="worksBox"></div>
+</section>
+ 
+<section id="blog">
+    <h2>设计思考</h2>
+    <div class="grid" id="blogGrid"></div>
+</section>
+ 
+<section id="contact">
+    <h2>联系我们</h2>
+    <p style="text-align:center">邮箱：<a href="mailto:hello@uiux.com">hello@uiux.com</a> | 微信：UIUXteam</p>
+</section>
+ 
+<footer>© 2025 UIUX Design Team —— Built with ❤️ & pure HTML</footer>
+ 
+<script>
+    /* ========== 单页导航 ========== */
+    document.querySelectorAll('nav li').forEach(el=>{
+        el.onclick = ()=>{
+            const tar = document.getElementById(el.dataset.to);
+            tar && tar.scrollIntoView({behavior:'smooth'})
+        }
+    });
+ 
+    /* ========== 读取数据并渲染 ========== */
+    fetch('data.json').then(r=>r.json()).then(renderAll);
+ 
+    function renderAll(D){
+        // 首屏
+        document.getElementById('heroTitle').textContent = D.hero.title;
+        document.getElementById('heroDesc').textContent = D.hero.desc;
+ 
+        // 服务
+        const sg = document.getElementById('serviceGrid');
+        D.services.forEach(o=>{
+            sg.insertAdjacentHTML('beforeend',`
+            <div class="card">
+                <div class="txt">
+                    <h3>${o.title}</h3>
+                    <p>${o.summary}</p>
+                </div>
+            </div>`);
+        });
+ 
+        // 作品
+        const wb = document.getElementById('worksBox');
+        D.works.forEach(o=>{
+            wb.insertAdjacentHTML('beforeend',`<img src="${o.img}" alt="${o.title}">`);
+        });
+ 
+        // 文章
+        const bg = document.getElementById('blogGrid');
+        D.posts.forEach(o=>{
+            bg.insertAdjacentHTML('beforeend',`
+            <div class="card">
+                <img src="${o.img}" alt="${o.title}">
+                <div class="txt">
+                    <h3>${o.title}</h3>
+                    <p>${o.summary}</p>
+                </div>
+            </div>`);
+        });
     }
-    </script>
-
-    <script>
-        // 设置当前年份
-        document.getElementById('currentYear').textContent = new Date().getFullYear();
-        
-        // 二维码加载处理
-        window.addEventListener('load', function() {
-            const qrCode = document.getElementById('qrCode');
-            const qrPlaceholder = document.getElementById('qrPlaceholder');
-            
-            // 检查二维码是否成功加载
-            if (qrCode.complete && qrCode.naturalHeight === 0) {
-                qrCode.style.display = 'none';
-                qrPlaceholder.style.display = 'flex';
-            }
-            
-            // 添加图片加载错误监听
-            qrCode.addEventListener('error', function() {
-                qrCode.style.display = 'none';
-                qrPlaceholder.style.display = 'flex';
-            });
-        });
-        
-        //  prefers-color-scheme 变化监听
-        const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-        darkModeMediaQuery.addListener(() => {
-            document.body.style.transition = 'background-color 0.3s ease';
-        });
-    </script>
+</script>
 </body>
 </html>
