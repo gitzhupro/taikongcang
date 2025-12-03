@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>数据编辑器 - UIUX 官网</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;padding:40px;background:#f5f7fa}
+    h1{margin-bottom:30px}
+    textarea{width:100%;height:500px;border:1px solid #ccd8e6;border-radius:6px;padding:15px;font-size:14px;font-family:Menlo,Consolas,monospace}
+    button{background:#1a7cff;color:#fff;border:none;padding:10px 24px;border-radius:4px;cursor:pointer;margin-top:15px}
+    button:hover{background:#0d68e0}
+    .ok{color:green;margin-top:10px}
+    .err{color:red}
+  </style>
+</head>
+<body>
+  <h1>可视化编辑 data.json</h1>
+  <p>下方文本框内直接修改 JSON，保存后立即生效（GitHub Pages 需重新推送）。</p>
+  <textarea id="txt"></textarea>
+  <br>
+  <button onclick="save()">保存到本地文件</button>
+  <span id="tip"></span>
+
+  <script>
+    const el = document.getElementById('txt');
+    const tip = document.getElementById('tip');
+
+    // 初始载入
+    fetch('data.json').then(r=>r.text()).then(t=>el.value=t);
+
+    function save(){
+      try{
+        JSON.parse(el.value); // 校验
+        const blob = new Blob([el.value],{type:'application/json'});
+        const a = document.createElement('a');
+        a.download = 'data.json';
+        a.href = URL.createObjectURL(blob);
+        a.click();
+        tip.textContent = '下载成功！用新生成的 data.json 覆盖仓库同名文件并 push 即可。';
+        tip.className = 'ok';
+      }catch(e){
+        tip.textContent = 'JSON 格式错误：'+e.message;
+        tip.className = 'err';
+      }
+    }
+  </script>
+</body>
+</html>
