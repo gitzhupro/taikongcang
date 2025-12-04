@@ -1,0 +1,29 @@
+{
+  "hero": {
+    "title": "智能硬件UI · HMI设计专家",
+    "desc": "提供极致易用的B端与智能产品界面设计服务"
+  },
+  "services": [
+    {
+      "title": "智能硬件UI",
+      "summary": "覆盖手表、音箱、车载等多形态屏幕，打通软硬件体验。"
+    },
+    {
+      "title": "HMI交互设计",
+      "summary": "安全、高效、低学习成本的驾驶舱人机界面解决方案。"
+    }
+  ],
+  "works": [
+    {
+      "title": "智能车载中控长图",
+      "img": "assets/works/work1.jpg"
+    }
+  ],
+  "posts": [
+    {
+      "title": "如何用「场景脚本」指导HMI设计",
+      "summary": "驾驶场景高度动态，我们将任务拆分为可执行的脚本片段，再映射到信息架构。",
+      "img": "assets/posts/post1.jpg"
+    }
+  ]
+}
