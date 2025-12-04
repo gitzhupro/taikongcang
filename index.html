@@ -24,6 +24,7 @@
             --transition: all 0.3s ease;
             --max-width: 1200px;
             --section-spacing: 80px;
+            --border-radius: 12px;
         }
         
         * {
@@ -130,7 +131,7 @@
         .section-title {
             font-size: 2.2rem;
             font-weight: 700;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             color: var(--text-color);
         }
         
@@ -155,7 +156,7 @@
             margin: 0 auto 40px;
         }
         
-        /* 宫格布局 */
+        /* 宫格布局 - 改为3宫格 */
         .grid-section {
             padding: var(--section-spacing) 0;
         }
@@ -167,22 +168,25 @@
             margin-bottom: 40px;
         }
         
+        /* 优化按钮样式 - 更优雅简洁 */
         .more-btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1.5px solid var(--primary-color);
+            padding: 10px 24px;
+            border-radius: var(--border-radius);
             font-weight: 500;
             cursor: pointer;
             transition: var(--transition);
             display: flex;
             align-items: center;
             gap: 8px;
+            font-size: 0.95rem;
         }
         
         .more-btn:hover {
-            background-color: var(--secondary-color);
+            background-color: var(--primary-color);
+            color: white;
             transform: translateY(-2px);
             box-shadow: var(--shadow-hover);
         }
@@ -195,31 +199,34 @@
         
         .grid-item {
             background-color: var(--card-bg);
-            border-radius: 12px;
+            border-radius: var(--border-radius);
             overflow: hidden;
             box-shadow: var(--shadow);
             transition: var(--transition);
             cursor: pointer;
             animation: fadeInUp 0.6s ease-out;
             animation-fill-mode: both;
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
         
         .grid-item:hover {
-            transform: translateY(-10px);
+            transform: translateY(-8px);
             box-shadow: var(--shadow-hover);
         }
         
         .grid-item:nth-child(1) { animation-delay: 0.1s; }
         .grid-item:nth-child(2) { animation-delay: 0.2s; }
         .grid-item:nth-child(3) { animation-delay: 0.3s; }
-        .grid-item:nth-child(4) { animation-delay: 0.4s; }
-        .grid-item:nth-child(5) { animation-delay: 0.5s; }
-        .grid-item:nth-child(6) { animation-delay: 0.6s; }
         
         .item-image {
             width: 100%;
-            height: 200px;
+            height: 220px;
             object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .grid-item:hover .item-image {
+            transform: scale(1.05);
         }
         
         .item-content {
@@ -229,21 +236,17 @@
         .item-title {
             font-size: 1.3rem;
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             color: var(--text-color);
         }
         
         .item-subtitle {
             font-size: 0.95rem;
             color: var(--text-light);
-            margin-bottom: 15px;
             line-height: 1.5;
         }
         
-        .item-date {
-            font-size: 0.85rem;
-            color: var(--text-light);
-        }
+        /* 移除了 .item-date 样式，因为不再显示日期 */
         
         /* 全屏弹窗 */
         .modal-overlay {
@@ -270,7 +273,7 @@
         
         .modal-content {
             background-color: var(--bg-color);
-            border-radius: 12px;
+            border-radius: var(--border-radius);
             max-width: 1000px;
             width: 100%;
             max-height: 90vh;
@@ -353,7 +356,7 @@
         /* 底部banner */
         .bottom-banner {
             margin: var(--section-spacing) 0;
-            border-radius: 12px;
+            border-radius: var(--border-radius);
             overflow: hidden;
             cursor: pointer;
             transition: var(--transition);
@@ -490,6 +493,11 @@
             
             .intro-text {
                 font-size: 1.2rem;
+            }
+            
+            .more-btn {
+                padding: 8px 16px;
+                font-size: 0.9rem;
             }
         }
         
@@ -704,20 +712,20 @@
             if (!response.ok) {
                 // 如果索引文件不存在，使用后备数据
                 allWorks = getFallbackWorks();
-                displayWorks(allWorks.slice(0, 6));
+                displayWorks(allWorks.slice(0, 3)); // 改为显示3个
                 return;
             }
             
             const data = await response.json();
             allWorks = data.works || [];
             
-            // 初始显示6个作品
-            displayWorks(allWorks.slice(0, 6));
+            // 初始显示3个作品
+            displayWorks(allWorks.slice(0, 3));
             
         } catch (error) {
             console.error('加载作品索引失败:', error);
             allWorks = getFallbackWorks();
-            displayWorks(allWorks.slice(0, 6));
+            displayWorks(allWorks.slice(0, 3));
         }
     }
     
@@ -728,7 +736,7 @@
             if (!response.ok) {
                 // 如果索引文件不存在，使用后备数据
                 allArticles = getFallbackArticles();
-                displayArticles(allArticles.slice(0, 6));
+                displayArticles(allArticles.slice(0, 3)); // 改为显示3个
                 return;
             }
             
@@ -738,13 +746,13 @@
             // 按日期排序（最新的在前面）
             allArticles.sort((a, b) => new Date(b.publishTime) - new Date(a.publishTime));
             
-            // 初始显示6篇文章
-            displayArticles(allArticles.slice(0, 6));
+            // 初始显示3篇文章
+            displayArticles(allArticles.slice(0, 3));
             
         } catch (error) {
             console.error('加载文章索引失败:', error);
             allArticles = getFallbackArticles();
-            displayArticles(allArticles.slice(0, 6));
+            displayArticles(allArticles.slice(0, 3));
         }
     }
     
@@ -764,6 +772,13 @@
                 title: '医疗数据监控仪表盘',
                 intro: '为医院ICU设计的实时数据监控系统界面，可同时展示多位患者的生命体征数据。',
                 mainImage: 'works/medical-dashboard/main.jpg'
+            },
+            {
+                id: 'ecommerce-redesign',
+                folder: 'ecommerce-redesign',
+                title: '电商平台用户体验优化',
+                intro: '为大型电商平台进行的全面UI/UX重构，提升用户购物体验和转化率。',
+                mainImage: 'works/ecommerce-redesign/main.jpg'
             }
         ];
     }
@@ -786,6 +801,14 @@
                 subtitle: '汽车智能座舱人机交互设计的关键原则与最佳实践案例分享',
                 cover: 'articles/hmi-best-practices/cover.jpg',
                 publishTime: '2024-03-10 10:15'
+            },
+            {
+                id: 'accessibility-design',
+                folder: 'accessibility-design',
+                title: '无障碍设计指南',
+                subtitle: '如何创建对所有人友好的数字产品，包括残障用户',
+                cover: 'articles/accessibility-design/cover.jpg',
+                publishTime: '2024-03-05 09:20'
             }
         ];
     }
@@ -872,7 +895,6 @@
                 <div class="item-content">
                     <h3 class="item-title">${article.title}</h3>
                     <p class="item-subtitle">${article.subtitle.substring(0, 60)}${article.subtitle.length > 60 ? '...' : ''}</p>
-                    <p class="item-date">${formatDate(article.publishTime)}</p>
                 </div>
             </div>
             `;
@@ -900,8 +922,8 @@
             displayWorks(allWorks);
             btn.innerHTML = '收起作品 <i class="fas fa-chevron-up"></i>';
         } else {
-            // 显示前6个作品
-            displayWorks(allWorks.slice(0, 6));
+            // 显示前3个作品
+            displayWorks(allWorks.slice(0, 3));
             btn.innerHTML = '更多作品 <i class="fas fa-chevron-right"></i>';
         }
     }
@@ -916,8 +938,8 @@
             displayArticles(allArticles);
             btn.innerHTML = '收起文章 <i class="fas fa-chevron-up"></i>';
         } else {
-            // 显示前6篇文章
-            displayArticles(allArticles.slice(0, 6));
+            // 显示前3篇文章
+            displayArticles(allArticles.slice(0, 3));
             btn.innerHTML = '更多文章 <i class="fas fa-chevron-right"></i>';
         }
     }
