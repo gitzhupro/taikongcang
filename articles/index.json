@@ -1,0 +1,52 @@
+{
+  "articles": [
+    {
+      "id": "design-trends-2024",
+      "folder": "design-trends-2024",
+      "title": "2024年UI设计趋势分析",
+      "subtitle": "探索新一年中最具影响力的设计趋势和用户体验创新方向",
+      "cover": "cover.jpg",
+      "publishTime": "2024-03-15 14:30"
+    },
+    {
+      "id": "hmi-best-practices",
+      "folder": "hmi-best-practices",
+      "title": "智能座舱HMI设计实践",
+      "subtitle": "汽车智能座舱人机交互设计的关键原则与最佳实践案例分享",
+      "cover": "cover.jpg",
+      "publishTime": "2024-03-10 10:15"
+    },
+    {
+      "id": "b端-ui-design",
+      "folder": "b端-ui-design",
+      "title": "B端产品UI设计方法论",
+      "subtitle": "企业级产品界面设计的核心原则与实践经验总结",
+      "cover": "cover.jpg",
+      "publishTime": "2024-03-05 09:00"
+    },
+    {
+      "id": "hardware-ui-challenges",
+      "folder": "hardware-ui-challenges",
+      "title": "智能硬件UI设计挑战",
+      "subtitle": "面对不同屏幕尺寸和交互方式的硬件产品UI设计解决方案",
+      "cover": "cover.jpg",
+      "publishTime": "2024-02-28 16:45"
+    },
+    {
+      "id": "ux-research-methods",
+      "folder": "ux-research-methods",
+      "title": "用户体验研究方法论",
+      "subtitle": "如何通过科学的用户研究提升产品设计的有效性与用户满意度",
+      "cover": "cover.jpg",
+      "publishTime": "2024-02-20 11:20"
+    },
+    {
+      "id": "design-system-guide",
+      "folder": "design-system-guide",
+      "title": "企业级设计系统构建指南",
+      "subtitle": "从零开始构建和维护一套可扩展的设计系统的完整流程",
+      "cover": "cover.jpg",
+      "publishTime": "2024-02-15 15:10"
+    }
+  ]
+}
