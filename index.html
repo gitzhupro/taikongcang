@@ -638,444 +638,430 @@
         </div>
     </div>
 
-    <script>
-        // 全局数据存储
-        let siteData = {};
-        let allWorks = [];
-        let allArticles = [];
-        let worksExpanded = false;
-        let articlesExpanded = false;
+   <script>
+    // 全局数据存储
+    let siteData = {};
+    let allWorks = [];
+    let allArticles = [];
+    let worksExpanded = false;
+    let articlesExpanded = false;
+    
+    // 页面加载完成后初始化
+    document.addEventListener('DOMContentLoaded', function() {
+        // 加载网站数据
+        loadSiteData();
         
-        // 页面加载完成后初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            // 加载网站数据
-            loadSiteData();
-            
-            // 绑定事件
-            document.getElementById('works-more-btn').addEventListener('click', toggleWorksExpand);
-            document.getElementById('articles-more-btn').addEventListener('click', toggleArticlesExpand);
-            document.getElementById('close-modal').addEventListener('click', closeModal);
-            document.getElementById('modal-overlay').addEventListener('click', function(e) {
-                if (e.target === this) closeModal();
-            });
-            
-            // 监听键盘ESC键关闭弹窗
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') closeModal();
-            });
+        // 绑定事件
+        document.getElementById('works-more-btn').addEventListener('click', toggleWorksExpand);
+        document.getElementById('articles-more-btn').addEventListener('click', toggleArticlesExpand);
+        document.getElementById('close-modal').addEventListener('click', closeModal);
+        document.getElementById('modal-overlay').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
         });
         
-        // 加载网站数据
-        async function loadSiteData() {
-            try {
-                // 加载网站配置
-                const response = await fetch('data.json');
-                siteData = await response.json();
-                
-                // 更新页面内容
-                updatePageContent();
-                
-                // 扫描并加载作品和文章
-                await scanAndLoadContent();
-                
-                // 设置底部banner
-                const bannerLink = document.getElementById('bottom-banner-link');
-                const bannerImg = document.getElementById('bottom-banner-img');
-                if (siteData.homePage && siteData.homePage.banner) {
-                    bannerLink.href = siteData.homePage.banner.link || 'about.html';
-                    bannerImg.src = siteData.homePage.banner.image || 'assets/about-banner.jpg';
-                    bannerImg.alt = '关于我们';
-                }
-                
-            } catch (error) {
-                console.error('加载网站数据失败:', error);
-                document.getElementById('works-grid').innerHTML = '<p class="loading">数据加载失败，请检查data.json文件</p>';
-                document.getElementById('articles-grid').innerHTML = '<p class="loading">数据加载失败，请检查data.json文件</p>';
+        // 监听键盘ESC键关闭弹窗
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+    });
+    
+    // 加载网站数据
+    async function loadSiteData() {
+        try {
+            // 加载网站配置
+            const response = await fetch('data.json');
+            siteData = await response.json();
+            
+            // 更新页面内容
+            updatePageContent();
+            
+            // 并行加载作品和文章索引
+            await Promise.all([
+                loadWorks(),
+                loadArticles()
+            ]);
+            
+            // 设置底部banner
+            const bannerLink = document.getElementById('bottom-banner-link');
+            const bannerImg = document.getElementById('bottom-banner-img');
+            if (siteData.homePage && siteData.homePage.banner) {
+                bannerLink.href = siteData.homePage.banner.link || 'about.html';
+                bannerImg.src = siteData.homePage.banner.image || 'assets/about-banner.jpg';
+                bannerImg.alt = '关于我们';
             }
+            
+        } catch (error) {
+            console.error('加载网站数据失败:', error);
+            document.getElementById('works-grid').innerHTML = '<p class="loading">数据加载失败，请检查data.json文件</p>';
+            document.getElementById('articles-grid').innerHTML = '<p class="loading">数据加载失败，请检查data.json文件</p>';
         }
-        
-        // 扫描并加载作品和文章内容
-        async function scanAndLoadContent() {
-            try {
-                // 扫描作品文件夹
-                const works = await scanFolder('works');
-                allWorks = works;
-                
-                // 扫描文章文件夹
-                const articles = await scanFolder('articles');
-                allArticles = articles;
-                
-                // 按日期排序（最新的在前面）
-                allArticles.sort((a, b) => new Date(b.publishTime) - new Date(a.publishTime));
-                
-                // 初始显示6个作品和文章
-                displayWorks(allWorks.slice(0, 6));
-                displayArticles(allArticles.slice(0, 6));
-                
-            } catch (error) {
-                console.error('扫描内容失败:', error);
-                // 提供后备数据
+    }
+    
+    // 加载作品索引
+    async function loadWorks() {
+        try {
+            const response = await fetch('works/index.json');
+            if (!response.ok) {
+                // 如果索引文件不存在，使用后备数据
                 allWorks = getFallbackWorks();
+                displayWorks(allWorks.slice(0, 6));
+                return;
+            }
+            
+            const data = await response.json();
+            allWorks = data.works || [];
+            
+            // 初始显示6个作品
+            displayWorks(allWorks.slice(0, 6));
+            
+        } catch (error) {
+            console.error('加载作品索引失败:', error);
+            allWorks = getFallbackWorks();
+            displayWorks(allWorks.slice(0, 6));
+        }
+    }
+    
+    // 加载文章索引
+    async function loadArticles() {
+        try {
+            const response = await fetch('articles/index.json');
+            if (!response.ok) {
+                // 如果索引文件不存在，使用后备数据
                 allArticles = getFallbackArticles();
-                displayWorks(allWorks.slice(0, 6));
                 displayArticles(allArticles.slice(0, 6));
+                return;
             }
+            
+            const data = await response.json();
+            allArticles = data.articles || [];
+            
+            // 按日期排序（最新的在前面）
+            allArticles.sort((a, b) => new Date(b.publishTime) - new Date(a.publishTime));
+            
+            // 初始显示6篇文章
+            displayArticles(allArticles.slice(0, 6));
+            
+        } catch (error) {
+            console.error('加载文章索引失败:', error);
+            allArticles = getFallbackArticles();
+            displayArticles(allArticles.slice(0, 6));
+        }
+    }
+    
+    // 后备作品数据
+    function getFallbackWorks() {
+        return [
+            {
+                id: 'smart-home-ui',
+                folder: 'smart-home-ui',
+                title: '智能家居控制面板',
+                intro: '为高端智能家居系统设计的全屋控制界面，整合了灯光、安防、环境、娱乐等系统的可视化控制。',
+                mainImage: 'works/smart-home-ui/main.jpg'
+            },
+            {
+                id: 'medical-dashboard',
+                folder: 'medical-dashboard',
+                title: '医疗数据监控仪表盘',
+                intro: '为医院ICU设计的实时数据监控系统界面，可同时展示多位患者的生命体征数据。',
+                mainImage: 'works/medical-dashboard/main.jpg'
+            }
+        ];
+    }
+    
+    // 后备文章数据
+    function getFallbackArticles() {
+        return [
+            {
+                id: 'design-trends-2024',
+                folder: 'design-trends-2024',
+                title: '2024年UI设计趋势分析',
+                subtitle: '探索新一年中最具影响力的设计趋势和用户体验创新方向',
+                cover: 'articles/design-trends-2024/cover.jpg',
+                publishTime: '2024-03-15 14:30'
+            },
+            {
+                id: 'hmi-best-practices',
+                folder: 'hmi-best-practices',
+                title: '智能座舱HMI设计实践',
+                subtitle: '汽车智能座舱人机交互设计的关键原则与最佳实践案例分享',
+                cover: 'articles/hmi-best-practices/cover.jpg',
+                publishTime: '2024-03-10 10:15'
+            }
+        ];
+    }
+    
+    // 更新页面内容
+    function updatePageContent() {
+        // 更新SEO相关
+        document.title = siteData.siteConfig?.title || 'UI设计服务官网';
+        document.querySelector('meta[name="description"]').setAttribute('content', siteData.siteConfig?.description || '');
+        document.querySelector('meta[name="keywords"]').setAttribute('content', siteData.siteConfig?.keywords || '');
+        
+        // 更新logo和标题
+        document.getElementById('site-logo').src = siteData.siteConfig?.logo || 'assets/logo.png';
+        document.getElementById('site-title').textContent = siteData.siteConfig?.title || '智界设计';
+        document.getElementById('footer-logo').src = siteData.siteConfig?.logo || 'assets/logo.png';
+        document.getElementById('footer-title').textContent = siteData.siteConfig?.title || '智界设计';
+        
+        // 更新介绍文本
+        document.getElementById('intro-text').textContent = siteData.homePage?.introText || '';
+        
+        // 更新页脚
+        document.getElementById('site-description').textContent = siteData.siteConfig?.description || '';
+        document.getElementById('copyright-text').textContent = siteData.siteConfig?.copyright || '';
+        
+        // 更新联系方式
+        if (siteData.homePage?.contact) {
+            document.getElementById('wechat-qr').src = siteData.homePage.contact.wechatQr || 'assets/qrcode.png';
+            document.getElementById('wechat-text').textContent = siteData.homePage.contact.wechatText || '扫码添加微信咨询';
+        }
+    }
+    
+    // 显示作品
+    function displayWorks(works) {
+        const container = document.getElementById('works-grid');
+        
+        if (!works || works.length === 0) {
+            container.innerHTML = '<p class="loading">暂无作品展示</p>';
+            return;
         }
         
-        // 扫描文件夹内容
-        async function scanFolder(folder) {
-            // 由于GitHub Pages不支持目录列表，我们需要维护一个索引文件
-            // 这里使用一个简单的解决方案：尝试预定义的可能文件夹
-            const predefinedFolders = {
-                'works': ['smart-home-ui', 'medical-dashboard', 'factory-mes-system', 'car-hmi-design', 'financial-analysis-tool', 'education-platform-ui'],
-                'articles': ['design-trends-2024', 'hmi-best-practices', 'b端-ui-design', 'hardware-ui-challenges', 'ux-research-methods', 'design-system-guide']
+        let html = '';
+        works.forEach(work => {
+            const imageSrc = `works/${work.folder}/${work.mainImage}`;
+            
+            html += `
+            <div class="grid-item" data-id="${work.id}" data-type="work">
+                <img class="item-image" src="${imageSrc}" alt="${work.title}" onerror="this.src='https://via.placeholder.com/800x600/3b82f6/ffffff?text=设计作品'">
+                <div class="item-content">
+                    <h3 class="item-title">${work.title}</h3>
+                    <p class="item-subtitle">${work.intro.substring(0, 80)}${work.intro.length > 80 ? '...' : ''}</p>
+                </div>
+            </div>
+            `;
+        });
+        
+        container.innerHTML = html;
+        
+        // 为每个作品项添加点击事件
+        document.querySelectorAll('#works-grid .grid-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                const type = this.getAttribute('data-type');
+                openModal(id, type);
+            });
+        });
+    }
+    
+    // 显示文章
+    function displayArticles(articles) {
+        const container = document.getElementById('articles-grid');
+        
+        if (!articles || articles.length === 0) {
+            container.innerHTML = '<p class="loading">暂无文章分享</p>';
+            return;
+        }
+        
+        let html = '';
+        articles.forEach(article => {
+            const coverSrc = `articles/${article.folder}/${article.cover}`;
+            
+            html += `
+            <div class="grid-item" data-id="${article.id}" data-type="article">
+                <img class="item-image" src="${coverSrc}" alt="${article.title}" onerror="this.src='https://via.placeholder.com/800x600/10b981/ffffff?text=设计文章'">
+                <div class="item-content">
+                    <h3 class="item-title">${article.title}</h3>
+                    <p class="item-subtitle">${article.subtitle.substring(0, 60)}${article.subtitle.length > 60 ? '...' : ''}</p>
+                    <p class="item-date">${formatDate(article.publishTime)}</p>
+                </div>
+            </div>
+            `;
+        });
+        
+        container.innerHTML = html;
+        
+        // 为每个文章项添加点击事件
+        document.querySelectorAll('#articles-grid .grid-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                const type = this.getAttribute('data-type');
+                openModal(id, type);
+            });
+        });
+    }
+    
+    // 切换作品展开状态
+    function toggleWorksExpand() {
+        worksExpanded = !worksExpanded;
+        const btn = document.getElementById('works-more-btn');
+        
+        if (worksExpanded) {
+            // 显示所有作品
+            displayWorks(allWorks);
+            btn.innerHTML = '收起作品 <i class="fas fa-chevron-up"></i>';
+        } else {
+            // 显示前6个作品
+            displayWorks(allWorks.slice(0, 6));
+            btn.innerHTML = '更多作品 <i class="fas fa-chevron-right"></i>';
+        }
+    }
+    
+    // 切换文章展开状态
+    function toggleArticlesExpand() {
+        articlesExpanded = !articlesExpanded;
+        const btn = document.getElementById('articles-more-btn');
+        
+        if (articlesExpanded) {
+            // 显示所有文章
+            displayArticles(allArticles);
+            btn.innerHTML = '收起文章 <i class="fas fa-chevron-up"></i>';
+        } else {
+            // 显示前6篇文章
+            displayArticles(allArticles.slice(0, 6));
+            btn.innerHTML = '更多文章 <i class="fas fa-chevron-right"></i>';
+        }
+    }
+    
+    // 打开弹窗
+    async function openModal(id, type) {
+        try {
+            // 显示加载状态
+            document.getElementById('modal-body').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>加载内容中...</p>
+                </div>
+            `;
+            
+            // 显示弹窗
+            document.getElementById('modal-overlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // 查找对应的内容
+            let content;
+            let folder;
+            
+            if (type === 'work') {
+                content = allWorks.find(w => w.id === id);
+                folder = 'works';
+            } else if (type === 'article') {
+                content = allArticles.find(a => a.id === id);
+                folder = 'articles';
+            }
+            
+            if (!content) throw new Error('内容不存在');
+            
+            // 加载Markdown文件
+            const response = await fetch(`${folder}/${content.folder}/index.md`);
+            if (!response.ok) throw new Error('Markdown文件加载失败');
+            
+            const markdown = await response.text();
+            const metadata = parseFrontMatter(markdown);
+            const htmlContent = marked.parse(markdown.replace(/---[\s\S]*?---/, '').trim());
+            
+            // 构建弹窗内容
+            if (type === 'work') {
+                document.getElementById('modal-body').innerHTML = `
+                    <h1 class="modal-title">${metadata.title || content.title}</h1>
+                    <div class="modal-meta">
+                        <p class="modal-subtitle">${metadata.intro || content.intro || ''}</p>
+                    </div>
+                    <div class="modal-text">${htmlContent}</div>
+                `;
+            } else if (type === 'article') {
+                document.getElementById('modal-body').innerHTML = `
+                    <h1 class="modal-title">${metadata.title || content.title}</h1>
+                    <p class="modal-subtitle">${metadata.subtitle || content.subtitle || ''}</p>
+                    <div class="modal-meta">
+                        <p class="modal-date">发布时间：${formatDate(metadata.publishTime || content.publishTime)}</p>
+                    </div>
+                    <div class="modal-text">${htmlContent}</div>
+                `;
+            }
+            
+            // 处理弹窗中的图片路径
+            const modalText = document.querySelector('.modal-text');
+            if (modalText) {
+                const images = modalText.querySelectorAll('img');
+                images.forEach(img => {
+                    if (!img.src.includes('http') && !img.src.includes('data:')) {
+                        img.src = `${folder}/${id}/${img.getAttribute('src')}`;
+                    }
+                });
+            }
+            
+        } catch (error) {
+            console.error('加载弹窗内容失败:', error);
+            document.getElementById('modal-body').innerHTML = `
+                <h1 class="modal-title">加载失败</h1>
+                <div class="modal-text">
+                    <p>抱歉，无法加载请求的内容。请检查文件是否存在或稍后重试。</p>
+                    <p>错误信息: ${error.message}</p>
+                </div>
+            `;
+        }
+    }
+    
+    // 关闭弹窗
+    function closeModal() {
+        document.getElementById('modal-overlay').classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+    
+    // 解析Markdown的front matter
+    function parseFrontMatter(markdown) {
+        const frontMatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n/;
+        const match = markdown.match(frontMatterRegex);
+        
+        if (!match) {
+            return {
+                title: '未命名',
+                subtitle: '',
+                publishTime: new Date().toISOString(),
+                cover: '',
+                mainImage: '',
+                intro: ''
             };
-            
-            const items = [];
-            
-            // 尝试加载每个预定义的文件夹
-            for (const folderName of predefinedFolders[folder] || []) {
-                try {
-                    const response = await fetch(`${folder}/${folderName}/index.md`);
-                    if (response.ok) {
-                        const markdown = await response.text();
-                        const metadata = parseFrontMatter(markdown);
-                        
-                        // 提取内容摘要（前200个字符）
-                        const content = markdown.replace(/---[\s\S]*?---/, '').trim();
-                        const excerpt = content.substring(0, 200) + (content.length > 200 ? '...' : '');
-                        
-                        items.push({
-                            id: folderName,
-                            folder: folderName,
-                            ...metadata,
-                            excerpt: excerpt
-                        });
-                    }
-                } catch (e) {
-                    console.warn(`无法加载 ${folder}/${folderName}:`, e.message);
-                }
-            }
-            
-            return items;
         }
         
-        // 解析Markdown的front matter
-        function parseFrontMatter(markdown) {
-            const frontMatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n/;
-            const match = markdown.match(frontMatterRegex);
-            
-            if (!match) {
-                return {
-                    title: '未命名',
-                    subtitle: '',
-                    publishTime: new Date().toISOString(),
-                    cover: '',
-                    mainImage: '',
-                    intro: ''
-                };
-            }
-            
-            const frontMatter = match[1];
-            const lines = frontMatter.split('\n');
-            const metadata = {};
-            
-            lines.forEach(line => {
-                const colonIndex = line.indexOf(':');
-                if (colonIndex > 0) {
-                    const key = line.substring(0, colonIndex).trim();
-                    let value = line.substring(colonIndex + 1).trim();
-                    
-                    // 移除可能的引号
-                    if (value.startsWith('"') && value.endsWith('"')) {
-                        value = value.substring(1, value.length - 1);
-                    } else if (value.startsWith("'") && value.endsWith("'")) {
-                        value = value.substring(1, value.length - 1);
-                    }
-                    
-                    metadata[key] = value;
-                }
-            });
-            
-            return metadata;
-        }
+        const frontMatter = match[1];
+        const lines = frontMatter.split('\n');
+        const metadata = {};
         
-        // 后备作品数据
-        function getFallbackWorks() {
-            return [
-                {
-                    id: 'smart-home-ui',
-                    title: '智能家居控制面板',
-                    intro: '为高端智能家居系统设计的全屋控制界面，整合了灯光、安防、环境、娱乐等系统的可视化控制。',
-                    mainImage: 'works/smart-home-ui/main.jpg',
-                    folder: 'smart-home-ui'
-                },
-                {
-                    id: 'medical-dashboard',
-                    title: '医疗数据监控仪表盘',
-                    intro: '为医院ICU设计的实时数据监控系统界面，可同时展示多位患者的生命体征数据。',
-                    mainImage: 'works/medical-dashboard/main.jpg',
-                    folder: 'medical-dashboard'
-                }
-            ];
-        }
-        
-        // 后备文章数据
-        function getFallbackArticles() {
-            return [
-                {
-                    id: 'design-trends-2024',
-                    title: '2024年UI设计趋势分析',
-                    subtitle: '探索新一年中最具影响力的设计趋势和用户体验创新方向',
-                    cover: 'articles/design-trends-2024/cover.jpg',
-                    publishTime: '2024-03-15 14:30',
-                    folder: 'design-trends-2024'
-                },
-                {
-                    id: 'hmi-best-practices',
-                    title: '智能座舱HMI设计实践',
-                    subtitle: '汽车智能座舱人机交互设计的关键原则与最佳实践案例分享',
-                    cover: 'articles/hmi-best-practices/cover.jpg',
-                    publishTime: '2024-03-10 10:15',
-                    folder: 'hmi-best-practices'
-                }
-            ];
-        }
-        
-        // 更新页面内容
-        function updatePageContent() {
-            // 更新SEO相关
-            document.title = siteData.siteConfig?.title || 'UI设计服务官网';
-            document.querySelector('meta[name="description"]').setAttribute('content', siteData.siteConfig?.description || '');
-            document.querySelector('meta[name="keywords"]').setAttribute('content', siteData.siteConfig?.keywords || '');
-            
-            // 更新logo和标题
-            document.getElementById('site-logo').src = siteData.siteConfig?.logo || 'assets/logo.png';
-            document.getElementById('site-title').textContent = siteData.siteConfig?.title || '智界设计';
-            document.getElementById('footer-logo').src = siteData.siteConfig?.logo || 'assets/logo.png';
-            document.getElementById('footer-title').textContent = siteData.siteConfig?.title || '智界设计';
-            
-            // 更新介绍文本
-            document.getElementById('intro-text').textContent = siteData.homePage?.introText || '';
-            
-            // 更新页脚
-            document.getElementById('site-description').textContent = siteData.siteConfig?.description || '';
-            document.getElementById('copyright-text').textContent = siteData.siteConfig?.copyright || '';
-            
-            // 更新联系方式
-            if (siteData.homePage?.contact) {
-                document.getElementById('wechat-qr').src = siteData.homePage.contact.wechatQr || 'assets/qrcode.png';
-                document.getElementById('wechat-text').textContent = siteData.homePage.contact.wechatText || '扫码添加微信咨询';
-            }
-        }
-        
-        // 显示作品
-        function displayWorks(works) {
-            const container = document.getElementById('works-grid');
-            
-            if (!works || works.length === 0) {
-                container.innerHTML = '<p class="loading">暂无作品展示</p>';
-                return;
-            }
-            
-            let html = '';
-            works.forEach(work => {
-                const imageSrc = work.mainImage || `works/${work.folder}/main.jpg`;
-                const intro = work.intro || work.excerpt || '';
+        lines.forEach(line => {
+            const colonIndex = line.indexOf(':');
+            if (colonIndex > 0) {
+                const key = line.substring(0, colonIndex).trim();
+                let value = line.substring(colonIndex + 1).trim();
                 
-                html += `
-                <div class="grid-item" data-id="${work.id}" data-type="work">
-                    <img class="item-image" src="${imageSrc}" alt="${work.title}" onerror="this.src='https://via.placeholder.com/800x600/3b82f6/ffffff?text=设计作品'">
-                    <div class="item-content">
-                        <h3 class="item-title">${work.title}</h3>
-                        <p class="item-subtitle">${intro.substring(0, 80)}${intro.length > 80 ? '...' : ''}</p>
-                    </div>
-                </div>
-                `;
-            });
-            
-            container.innerHTML = html;
-            
-            // 为每个作品项添加点击事件
-            document.querySelectorAll('#works-grid .grid-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    const id = this.getAttribute('data-id');
-                    const type = this.getAttribute('data-type');
-                    openModal(id, type);
-                });
-            });
-        }
-        
-        // 显示文章
-        function displayArticles(articles) {
-            const container = document.getElementById('articles-grid');
-            
-            if (!articles || articles.length === 0) {
-                container.innerHTML = '<p class="loading">暂无文章分享</p>';
-                return;
-            }
-            
-            let html = '';
-            articles.forEach(article => {
-                const coverSrc = article.cover || `articles/${article.folder}/cover.jpg`;
-                const subtitle = article.subtitle || article.excerpt || '';
-                
-                html += `
-                <div class="grid-item" data-id="${article.id}" data-type="article">
-                    <img class="item-image" src="${coverSrc}" alt="${article.title}" onerror="this.src='https://via.placeholder.com/800x600/10b981/ffffff?text=设计文章'">
-                    <div class="item-content">
-                        <h3 class="item-title">${article.title}</h3>
-                        <p class="item-subtitle">${subtitle.substring(0, 60)}${subtitle.length > 60 ? '...' : ''}</p>
-                        <p class="item-date">${formatDate(article.publishTime)}</p>
-                    </div>
-                </div>
-                `;
-            });
-            
-            container.innerHTML = html;
-            
-            // 为每个文章项添加点击事件
-            document.querySelectorAll('#articles-grid .grid-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    const id = this.getAttribute('data-id');
-                    const type = this.getAttribute('data-type');
-                    openModal(id, type);
-                });
-            });
-        }
-        
-        // 切换作品展开状态
-        function toggleWorksExpand() {
-            worksExpanded = !worksExpanded;
-            const btn = document.getElementById('works-more-btn');
-            
-            if (worksExpanded) {
-                // 显示所有作品
-                displayWorks(allWorks);
-                btn.innerHTML = '收起作品 <i class="fas fa-chevron-up"></i>';
-            } else {
-                // 显示前6个作品
-                displayWorks(allWorks.slice(0, 6));
-                btn.innerHTML = '更多作品 <i class="fas fa-chevron-right"></i>';
-            }
-        }
-        
-        // 切换文章展开状态
-        function toggleArticlesExpand() {
-            articlesExpanded = !articlesExpanded;
-            const btn = document.getElementById('articles-more-btn');
-            
-            if (articlesExpanded) {
-                // 显示所有文章
-                displayArticles(allArticles);
-                btn.innerHTML = '收起文章 <i class="fas fa-chevron-up"></i>';
-            } else {
-                // 显示前6篇文章
-                displayArticles(allArticles.slice(0, 6));
-                btn.innerHTML = '更多文章 <i class="fas fa-chevron-right"></i>';
-            }
-        }
-        
-        // 打开弹窗
-        async function openModal(id, type) {
-            try {
-                // 显示加载状态
-                document.getElementById('modal-body').innerHTML = `
-                    <div class="loading">
-                        <div class="spinner"></div>
-                        <p>加载内容中...</p>
-                    </div>
-                `;
-                
-                // 显示弹窗
-                document.getElementById('modal-overlay').classList.add('active');
-                document.body.style.overflow = 'hidden';
-                
-                // 查找对应的内容
-                let content;
-                let folder;
-                
-                if (type === 'work') {
-                    content = allWorks.find(w => w.id === id);
-                    folder = 'works';
-                } else if (type === 'article') {
-                    content = allArticles.find(a => a.id === id);
-                    folder = 'articles';
+                // 移除可能的引号
+                if (value.startsWith('"') && value.endsWith('"')) {
+                    value = value.substring(1, value.length - 1);
+                } else if (value.startsWith("'") && value.endsWith("'")) {
+                    value = value.substring(1, value.length - 1);
                 }
                 
-                if (!content) throw new Error('内容不存在');
-                
-                // 加载Markdown文件
-                const response = await fetch(`${folder}/${content.folder}/index.md`);
-                if (!response.ok) throw new Error('Markdown文件加载失败');
-                
-                const markdown = await response.text();
-                const metadata = parseFrontMatter(markdown);
-                const htmlContent = marked.parse(markdown.replace(/---[\s\S]*?---/, '').trim());
-                
-                // 构建弹窗内容
-                if (type === 'work') {
-                    document.getElementById('modal-body').innerHTML = `
-                        <h1 class="modal-title">${metadata.title || content.title}</h1>
-                        <div class="modal-meta">
-                            <p class="modal-subtitle">${metadata.intro || content.intro || ''}</p>
-                        </div>
-                        <div class="modal-text">${htmlContent}</div>
-                    `;
-                } else if (type === 'article') {
-                    document.getElementById('modal-body').innerHTML = `
-                        <h1 class="modal-title">${metadata.title || content.title}</h1>
-                        <p class="modal-subtitle">${metadata.subtitle || content.subtitle || ''}</p>
-                        <div class="modal-meta">
-                            <p class="modal-date">发布时间：${formatDate(metadata.publishTime || content.publishTime)}</p>
-                        </div>
-                        <div class="modal-text">${htmlContent}</div>
-                    `;
-                }
-                
-                // 处理弹窗中的图片路径
-                const modalText = document.querySelector('.modal-text');
-                if (modalText) {
-                    const images = modalText.querySelectorAll('img');
-                    images.forEach(img => {
-                        if (!img.src.includes('http') && !img.src.includes('data:')) {
-                            img.src = `${folder}/${id}/${img.getAttribute('src')}`;
-                        }
-                    });
-                }
-                
-            } catch (error) {
-                console.error('加载弹窗内容失败:', error);
-                document.getElementById('modal-body').innerHTML = `
-                    <h1 class="modal-title">加载失败</h1>
-                    <div class="modal-text">
-                        <p>抱歉，无法加载请求的内容。请检查文件是否存在或稍后重试。</p>
-                        <p>错误信息: ${error.message}</p>
-                    </div>
-                `;
+                metadata[key] = value;
             }
-        }
+        });
         
-        // 关闭弹窗
-        function closeModal() {
-            document.getElementById('modal-overlay').classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
+        return metadata;
+    }
+    
+    // 格式化日期
+    function formatDate(dateString) {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return dateString;
         
-        // 格式化日期
-        function formatDate(dateString) {
-            if (!dateString) return '';
-            const date = new Date(dateString);
-            if (isNaN(date.getTime())) return dateString;
-            
-            return date.toLocaleDateString('zh-CN', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
-    </script>
+        return date.toLocaleDateString('zh-CN', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+</script>
 </body>
 </html>
