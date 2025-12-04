@@ -2,137 +2,936 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>UIUX设计服务 | 智能硬件HMI与B端界面专家</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <!-- 关键 SEO -->
-    <meta name="keywords" content="UI设计,UX设计,智能硬件UI,HMI交互设计,B端UI设计,智能产品设计,UX设计服务,网站UI设计">
-    <meta name="description" content="专注智能硬件与B端产品的UI/UX设计团队，提供HMI交互、网站UI、品牌界面等一站式设计服务。">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
-        /* ========== 极简 reset ========== */
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:#fff;color:#222;line-height:1.6}
-        img{max-width:100%;display:block}
-        a{text-decoration:none;color:inherit}
-        /* ========== 动画 ========== */
-        @keyframes fadeDown{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:none}}
-        @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
-        /* ========== 导航 ========== */
-        header{position:fixed;top:0;left:0;right:0;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.05);z-index:9}
-        nav{display:flex;align-items:center;justify-content:space-between;max-width:1100px;margin:auto;padding:0 20px;height:60px}
-        nav .logo{height:36px}
-        nav ul{display:flex;gap:28px;list-style:none;font-size:15px}
-        nav li{cursor:pointer;transition:.2s}
-        nav li:hover{color:#1a7cff}
-        /* ========== 首屏 ========== */
-        #hero{height:100vh;background:url(assets/hero.jpg) center/cover no-repeat;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff}
-        #hero h1{font-size:48px;font-weight:600;margin-bottom:20px;animation:fadeDown 1s ease}
-        #hero p{font-size:20px;animation:fadeUp 1s ease .2s both}
-        /* ========== 区块通用 ========== */
-        section{max-width:1100px;margin:80px auto;padding:0 20px}
-        h2{font-size:32px;margin-bottom:40px;text-align:center}
-        .grid{display:grid;gap:30px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
-        .card{background:#f7f9fc;border-radius:8px;overflow:hidden;transition:.3s}
-        .card:hover{transform:translateY(-6px);box-shadow:0 10px 20px rgba(0,0,0,.08)}
-        .card img{width:100%;height:180px;object-fit:cover}
-        .card .txt{padding:20px}
-        .card h3{font-size:18px;margin-bottom:10px}
-        /* ========== 长图作品 ========== */
-        #works img{width:100%;border-radius:8px;margin-bottom:30px}
-        /* ========== 页脚 ========== */
-        footer{text-align:center;padding:40px 0;font-size:14px;color:#999}
+        /* 全局样式 */
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #3b82f6;
+            --text-color: #1f2937;
+            --text-light: #6b7280;
+            --bg-color: #ffffff;
+            --bg-light: #f9fafb;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s ease;
+            --max-width: 1200px;
+            --section-spacing: 80px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 75%;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 导航栏 */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 15px 0;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        
+        .logo-img {
+            height: 40px;
+            width: auto;
+        }
+        
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-left: 10px;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-menu li {
+            margin-left: 40px;
+        }
+        
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 1rem;
+            position: relative;
+            padding: 5px 0;
+            transition: var(--transition);
+        }
+        
+        .nav-menu a:hover {
+            color: var(--primary-color);
+        }
+        
+        .nav-menu a.active {
+            color: var(--primary-color);
+        }
+        
+        .nav-menu a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary-color);
+        }
+        
+        /* 主要内容区域 */
+        main {
+            margin-top: 80px;
+            padding-top: 40px;
+        }
+        
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-color);
+        }
+        
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: 40px;
+            max-width: 700px;
+        }
+        
+        .intro-section {
+            padding: 60px 0;
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        .intro-text {
+            font-size: 1.4rem;
+            line-height: 1.8;
+            color: var(--text-color);
+            max-width: 800px;
+            margin: 0 auto 40px;
+        }
+        
+        /* 宫格布局 */
+        .grid-section {
+            padding: var(--section-spacing) 0;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .more-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .more-btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .grid-item {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            animation: fadeInUp 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+        
+        .grid-item:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .grid-item:nth-child(1) { animation-delay: 0.1s; }
+        .grid-item:nth-child(2) { animation-delay: 0.2s; }
+        .grid-item:nth-child(3) { animation-delay: 0.3s; }
+        .grid-item:nth-child(4) { animation-delay: 0.4s; }
+        .grid-item:nth-child(5) { animation-delay: 0.5s; }
+        .grid-item:nth-child(6) { animation-delay: 0.6s; }
+        
+        .item-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .item-content {
+            padding: 25px;
+        }
+        
+        .item-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-color);
+        }
+        
+        .item-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .item-date {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+        
+        /* 全屏弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background-color: var(--bg-color);
+            border-radius: 12px;
+            max-width: 1000px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            transform: translateY(30px);
+            transition: transform 0.4s ease;
+        }
+        
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--text-light);
+            cursor: pointer;
+            z-index: 10;
+            transition: var(--transition);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .close-modal:hover {
+            color: var(--text-color);
+            background-color: var(--bg-light);
+        }
+        
+        .modal-body {
+            padding: 40px;
+        }
+        
+        .modal-title {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+        
+        .modal-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+        
+        .modal-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .modal-date {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+        
+        .modal-text {
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+        
+        .modal-text img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        /* 底部banner */
+        .bottom-banner {
+            margin: var(--section-spacing) 0;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .bottom-banner:hover {
+            transform: scale(1.01);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .banner-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        /* 页脚 */
+        footer {
+            background-color: var(--bg-light);
+            padding: 60px 0 30px;
+            margin-top: var(--section-spacing);
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .footer-logo-img {
+            height: 40px;
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        .footer-logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .footer-description {
+            max-width: 300px;
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+        
+        .footer-contact {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-light);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 992px) {
+            .container {
+                width: 90%;
+            }
+            
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .nav-menu li {
+                margin-left: 25px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+            }
+            
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-menu {
+                display: none;
+            }
+            
+            .modal-body {
+                padding: 25px;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .intro-text {
+                font-size: 1.2rem;
+            }
+        }
+        
+        /* 加载动画 */
+        .loading {
+            text-align: center;
+            padding: 60px 0;
+            color: var(--text-light);
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(59, 130, 246, 0.1);
+            border-left-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 <body>
-<header>
-    <nav>
-        <img src="assets/logo.png" class="logo" alt="logo">
-        <ul>
-            <li data-to="hero">首页</li>
-            <li data-to="service">服务</li>
-            <li data-to="works">作品</li>
-            <li data-to="blog">文章</li>
-            <li data-to="contact">联系</li>
-        </ul>
-    </nav>
-</header>
- 
-<section id="hero">
-    <div>
-        <h1 id="heroTitle">智能硬件UI · HMI设计专家</h1>
-        <p id="heroDesc">提供极致易用的B端与智能产品界面设计服务</p>
+    <!-- 导航栏 -->
+    <header>
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <img id="site-logo" class="logo-img" src="" alt="网站Logo">
+                <span id="site-title" class="logo-text"></span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="active">首页</a></li>
+                <li><a href="about.html">关于</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <main>
+        <!-- 介绍部分 -->
+        <section class="intro-section">
+            <div class="container">
+                <p id="intro-text" class="intro-text"></p>
+            </div>
+        </section>
+
+        <!-- 作品展示 -->
+        <section class="grid-section">
+            <div class="container">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">作品案例</h2>
+                        <p class="section-subtitle">我们为各行业提供的专业UI/UX设计解决方案</p>
+                    </div>
+                    <button class="more-btn" id="works-more-btn">
+                        更多作品 <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div class="grid-container" id="works-grid">
+                    <!-- 作品将通过JS动态加载 -->
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>加载作品中...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 文章分享 -->
+        <section class="grid-section">
+            <div class="container">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">观点视角</h2>
+                        <p class="section-subtitle">分享UI/UX设计领域的最新见解与实践经验</p>
+                    </div>
+                    <button class="more-btn" id="articles-more-btn">
+                        更多文章 <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div class="grid-container" id="articles-grid">
+                    <!-- 文章将通过JS动态加载 -->
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>加载文章中...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 底部Banner -->
+        <div class="container">
+            <a id="bottom-banner-link" class="bottom-banner">
+                <img id="bottom-banner-img" class="banner-image" src="" alt="关于我们">
+            </a>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <div class="footer-logo">
+                        <img id="footer-logo" class="footer-logo-img" src="" alt="网站Logo">
+                        <span id="footer-title" class="footer-logo-text"></span>
+                    </div>
+                    <p id="site-description" class="footer-description"></p>
+                    <div class="footer-contact">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>contact@uidesign.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span>+86 138 0000 0000</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3>关注我们</h3>
+                    <img id="wechat-qr" src="" alt="微信二维码" style="width: 120px; height: 120px; margin-top: 15px; border-radius: 8px;">
+                    <p id="wechat-text" style="margin-top: 10px; color: var(--text-light); font-size: 0.9rem;"></p>
+                </div>
+            </div>
+            <div class="copyright">
+                <p id="copyright-text"></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 弹窗 -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal-content">
+            <button class="close-modal" id="close-modal">&times;</button>
+            <div class="modal-body" id="modal-body">
+                <!-- 弹窗内容将通过JS动态加载 -->
+            </div>
+        </div>
     </div>
-</section>
- 
-<section id="service">
-    <h2>核心服务</h2>
-    <div class="grid" id="serviceGrid"></div>
-</section>
- 
-<section id="works">
-    <h2>精选作品</h2>
-    <div id="worksBox"></div>
-</section>
- 
-<section id="blog">
-    <h2>设计思考</h2>
-    <div class="grid" id="blogGrid"></div>
-</section>
- 
-<section id="contact">
-    <h2>联系我们</h2>
-    <p style="text-align:center">邮箱：<a href="mailto:hello@uiux.com">hello@uiux.com</a> | 微信：UIUXteam</p>
-</section>
- 
-<footer>© 2025 UIUX Design Team —— Built with ❤️ & pure HTML</footer>
- 
-<script>
-    /* ========== 单页导航 ========== */
-    document.querySelectorAll('nav li').forEach(el=>{
-        el.onclick = ()=>{
-            const tar = document.getElementById(el.dataset.to);
-            tar && tar.scrollIntoView({behavior:'smooth'})
+
+    <script>
+        // 全局数据存储
+        let siteData = {};
+        let allWorks = [];
+        let allArticles = [];
+        let worksExpanded = false;
+        let articlesExpanded = false;
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载网站数据
+            loadSiteData();
+            
+            // 绑定事件
+            document.getElementById('works-more-btn').addEventListener('click', toggleWorksExpand);
+            document.getElementById('articles-more-btn').addEventListener('click', toggleArticlesExpand);
+            document.getElementById('close-modal').addEventListener('click', closeModal);
+            document.getElementById('modal-overlay').addEventListener('click', function(e) {
+                if (e.target === this) closeModal();
+            });
+            
+            // 监听键盘ESC键关闭弹窗
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') closeModal();
+            });
+        });
+        
+        // 加载网站数据
+        async function loadSiteData() {
+            try {
+                const response = await fetch('data.json');
+                siteData = await response.json();
+                
+                // 更新页面内容
+                updatePageContent();
+                
+                // 加载作品和文章
+                allWorks = siteData.works || [];
+                allArticles = siteData.articles || [];
+                
+                // 初始显示6个作品和文章
+                displayWorks(allWorks.slice(0, 6));
+                displayArticles(allArticles.slice(0, 6));
+                
+                // 设置底部banner
+                const bannerLink = document.getElementById('bottom-banner-link');
+                const bannerImg = document.getElementById('bottom-banner-img');
+                if (siteData.homePage && siteData.homePage.banner) {
+                    bannerLink.href = siteData.homePage.banner.link || 'about.html';
+                    bannerImg.src = siteData.homePage.banner.image || 'assets/about-banner.jpg';
+                    bannerImg.alt = '关于我们';
+                }
+                
+            } catch (error) {
+                console.error('加载网站数据失败:', error);
+                document.getElementById('works-grid').innerHTML = '<p class="loading">数据加载失败，请检查data.json文件</p>';
+                document.getElementById('articles-grid').innerHTML = '<p class="loading">数据加载失败，请检查data.json文件</p>';
+            }
         }
-    });
- 
-    /* ========== 读取数据并渲染 ========== */
-    fetch('data.json').then(r=>r.json()).then(renderAll);
- 
-    function renderAll(D){
-        // 首屏
-        document.getElementById('heroTitle').textContent = D.hero.title;
-        document.getElementById('heroDesc').textContent = D.hero.desc;
- 
-        // 服务
-        const sg = document.getElementById('serviceGrid');
-        D.services.forEach(o=>{
-            sg.insertAdjacentHTML('beforeend',`
-            <div class="card">
-                <div class="txt">
-                    <h3>${o.title}</h3>
-                    <p>${o.summary}</p>
+        
+        // 更新页面内容
+        function updatePageContent() {
+            // 更新SEO相关
+            document.title = siteData.siteConfig?.title || 'UI设计服务官网';
+            document.querySelector('meta[name="description"]').setAttribute('content', siteData.siteConfig?.description || '');
+            document.querySelector('meta[name="keywords"]').setAttribute('content', siteData.siteConfig?.keywords || '');
+            
+            // 更新logo和标题
+            document.getElementById('site-logo').src = siteData.siteConfig?.logo || 'assets/logo.png';
+            document.getElementById('site-title').textContent = siteData.siteConfig?.title || '智界设计';
+            document.getElementById('footer-logo').src = siteData.siteConfig?.logo || 'assets/logo.png';
+            document.getElementById('footer-title').textContent = siteData.siteConfig?.title || '智界设计';
+            
+            // 更新介绍文本
+            document.getElementById('intro-text').textContent = siteData.homePage?.introText || '';
+            
+            // 更新页脚
+            document.getElementById('site-description').textContent = siteData.siteConfig?.description || '';
+            document.getElementById('copyright-text').textContent = siteData.siteConfig?.copyright || '';
+            
+            // 更新联系方式
+            if (siteData.homePage?.contact) {
+                document.getElementById('wechat-qr').src = siteData.homePage.contact.wechatQr || 'assets/qrcode.png';
+                document.getElementById('wechat-text').textContent = siteData.homePage.contact.wechatText || '扫码添加微信咨询';
+            }
+        }
+        
+        // 显示作品
+        function displayWorks(works) {
+            const container = document.getElementById('works-grid');
+            
+            if (!works || works.length === 0) {
+                container.innerHTML = '<p class="loading">暂无作品展示</p>';
+                return;
+            }
+            
+            let html = '';
+            works.forEach(work => {
+                html += `
+                <div class="grid-item" data-id="${work.id}" data-type="work">
+                    <img class="item-image" src="${work.mainImage}" alt="${work.title}" onerror="this.src='https://via.placeholder.com/800x600/3b82f6/ffffff?text=设计作品'">
+                    <div class="item-content">
+                        <h3 class="item-title">${work.title}</h3>
+                        <p class="item-subtitle">${work.intro.substring(0, 80)}${work.intro.length > 80 ? '...' : ''}</p>
+                    </div>
                 </div>
-            </div>`);
-        });
- 
-        // 作品
-        const wb = document.getElementById('worksBox');
-        D.works.forEach(o=>{
-            wb.insertAdjacentHTML('beforeend',`<img src="${o.img}" alt="${o.title}">`);
-        });
- 
-        // 文章
-        const bg = document.getElementById('blogGrid');
-        D.posts.forEach(o=>{
-            bg.insertAdjacentHTML('beforeend',`
-            <div class="card">
-                <img src="${o.img}" alt="${o.title}">
-                <div class="txt">
-                    <h3>${o.title}</h3>
-                    <p>${o.summary}</p>
+                `;
+            });
+            
+            container.innerHTML = html;
+            
+            // 为每个作品项添加点击事件
+            document.querySelectorAll('#works-grid .grid-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    const type = this.getAttribute('data-type');
+                    openModal(id, type);
+                });
+            });
+        }
+        
+        // 显示文章
+        function displayArticles(articles) {
+            const container = document.getElementById('articles-grid');
+            
+            if (!articles || articles.length === 0) {
+                container.innerHTML = '<p class="loading">暂无文章分享</p>';
+                return;
+            }
+            
+            let html = '';
+            articles.forEach(article => {
+                html += `
+                <div class="grid-item" data-id="${article.id}" data-type="article">
+                    <img class="item-image" src="${article.cover}" alt="${article.title}" onerror="this.src='https://via.placeholder.com/800x600/10b981/ffffff?text=设计文章'">
+                    <div class="item-content">
+                        <h3 class="item-title">${article.title}</h3>
+                        <p class="item-subtitle">${article.subtitle.substring(0, 60)}${article.subtitle.length > 60 ? '...' : ''}</p>
+                        <p class="item-date">${formatDate(article.publishTime)}</p>
+                    </div>
                 </div>
-            </div>`);
-        });
-    }
-</script>
+                `;
+            });
+            
+            container.innerHTML = html;
+            
+            // 为每个文章项添加点击事件
+            document.querySelectorAll('#articles-grid .grid-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    const type = this.getAttribute('data-type');
+                    openModal(id, type);
+                });
+            });
+        }
+        
+        // 切换作品展开状态
+        function toggleWorksExpand() {
+            worksExpanded = !worksExpanded;
+            const btn = document.getElementById('works-more-btn');
+            
+            if (worksExpanded) {
+                // 显示所有作品
+                displayWorks(allWorks);
+                btn.innerHTML = '收起作品 <i class="fas fa-chevron-up"></i>';
+            } else {
+                // 显示前6个作品
+                displayWorks(allWorks.slice(0, 6));
+                btn.innerHTML = '更多作品 <i class="fas fa-chevron-right"></i>';
+            }
+        }
+        
+        // 切换文章展开状态
+        function toggleArticlesExpand() {
+            articlesExpanded = !articlesExpanded;
+            const btn = document.getElementById('articles-more-btn');
+            
+            if (articlesExpanded) {
+                // 显示所有文章
+                displayArticles(allArticles);
+                btn.innerHTML = '收起文章 <i class="fas fa-chevron-up"></i>';
+            } else {
+                // 显示前6篇文章
+                displayArticles(allArticles.slice(0, 6));
+                btn.innerHTML = '更多文章 <i class="fas fa-chevron-right"></i>';
+            }
+        }
+        
+        // 打开弹窗
+        async function openModal(id, type) {
+            try {
+                // 显示加载状态
+                document.getElementById('modal-body').innerHTML = `
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>加载内容中...</p>
+                    </div>
+                `;
+                
+                // 显示弹窗
+                document.getElementById('modal-overlay').classList.add('active');
+                document.body.style.overflow = 'hidden';
+                
+                if (type === 'work') {
+                    // 加载作品详情
+                    const work = allWorks.find(w => w.id === id);
+                    if (!work) throw new Error('作品不存在');
+                    
+                    // 加载作品的Markdown文件
+                    const response = await fetch(`works/${work.folder}/index.md`);
+                    if (!response.ok) throw new Error('Markdown文件加载失败');
+                    
+                    const markdown = await response.text();
+                    const htmlContent = marked.parse(markdown);
+                    
+                    // 构建弹窗内容
+                    document.getElementById('modal-body').innerHTML = `
+                        <h1 class="modal-title">${work.title}</h1>
+                        <div class="modal-meta">
+                            <p class="modal-subtitle">${work.intro}</p>
+                        </div>
+                        <div class="modal-text">${htmlContent}</div>
+                    `;
+                    
+                } else if (type === 'article') {
+                    // 加载文章详情
+                    const article = allArticles.find(a => a.id === id);
+                    if (!article) throw new Error('文章不存在');
+                    
+                    // 加载文章的Markdown文件
+                    const response = await fetch(`articles/${article.folder}/index.md`);
+                    if (!response.ok) throw new Error('Markdown文件加载失败');
+                    
+                    const markdown = await response.text();
+                    const htmlContent = marked.parse(markdown);
+                    
+                    // 构建弹窗内容
+                    document.getElementById('modal-body').innerHTML = `
+                        <h1 class="modal-title">${article.title}</h1>
+                        <p class="modal-subtitle">${article.subtitle}</p>
+                        <div class="modal-meta">
+                            <p class="modal-date">发布时间：${formatDate(article.publishTime)}</p>
+                        </div>
+                        <div class="modal-text">${htmlContent}</div>
+                    `;
+                }
+                
+                // 处理弹窗中的图片路径
+                const modalText = document.querySelector('.modal-text');
+                if (modalText) {
+                    const images = modalText.querySelectorAll('img');
+                    images.forEach(img => {
+                        if (!img.src.includes('http') && !img.src.includes('data:')) {
+                            if (type === 'work') {
+                                img.src = `works/${id}/${img.getAttribute('src')}`;
+                            } else if (type === 'article') {
+                                img.src = `articles/${id}/${img.getAttribute('src')}`;
+                            }
+                        }
+                    });
+                }
+                
+            } catch (error) {
+                console.error('加载弹窗内容失败:', error);
+                document.getElementById('modal-body').innerHTML = `
+                    <h1 class="modal-title">加载失败</h1>
+                    <div class="modal-text">
+                        <p>抱歉，无法加载请求的内容。请检查文件是否存在或稍后重试。</p>
+                        <p>错误信息: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // 关闭弹窗
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // 格式化日期
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return dateString;
+            
+            return date.toLocaleDateString('zh-CN', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+    </script>
 </body>
 </html>
