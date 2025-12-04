@@ -1,29 +1,133 @@
 {
-  "hero": {
-    "title": "智能硬件UI · HMI设计专家",
-    "desc": "提供极致易用的B端与智能产品界面设计服务"
+  "siteConfig": {
+    "title": "智界设计 | UI/UX设计服务专家",
+    "description": "专注于智能硬件UI、HMI交互设计、B端UI设计的专业设计服务团队",
+    "keywords": "UI设计,UX设计,智能硬件UI,HMI交互设计,B端UI设计,智能产品设计,UX设计服务,网站UI设计",
+    "logo": "assets/logo.png",
+    "favicon": "assets/logo.png",
+    "copyright": "© 2024 智界设计工作室. 保留所有权利."
   },
-  "services": [
+  "homePage": {
+    "introText": "我们专注于为智能硬件、B端产品提供专业的UI/UX设计服务。通过深入研究用户需求与技术实现，打造既美观又高效的用户体验解决方案。",
+    "contact": {
+      "wechatQr": "assets/qrcode.png",
+      "wechatText": "扫码添加微信咨询"
+    },
+    "banner": {
+      "image": "assets/about-banner.jpg",
+      "link": "about.html"
+    }
+  },
+  "aboutPage": {
+    "title": "关于我们",
+    "introText": "我们是一支专注于智能产品UI/UX设计的专业团队，致力于创造卓越的用户体验。",
+    "qrcode": "assets/qrcode.png",
+    "recommendation": "期待与您合作，共创卓越产品体验"
+  },
+  "navigation": [
     {
-      "title": "智能硬件UI",
-      "summary": "覆盖手表、音箱、车载等多形态屏幕，打通软硬件体验。"
+      "name": "首页",
+      "url": "index.html",
+      "isActive": true
     },
     {
-      "title": "HMI交互设计",
-      "summary": "安全、高效、低学习成本的驾驶舱人机界面解决方案。"
+      "name": "关于",
+      "url": "about.html",
+      "isActive": false
+    }
+  ],
+  "articles": [
+    {
+      "id": "design-trends-2024",
+      "title": "2024年UI设计趋势分析",
+      "subtitle": "探索新一年中最具影响力的设计趋势和用户体验创新方向",
+      "cover": "articles/design-trends-2024/cover.jpg",
+      "publishTime": "2024-03-15 14:30",
+      "folder": "design-trends-2024"
+    },
+    {
+      "id": "hmi-best-practices",
+      "title": "智能座舱HMI设计实践",
+      "subtitle": "汽车智能座舱人机交互设计的关键原则与最佳实践案例分享",
+      "cover": "articles/hmi-best-practices/cover.jpg",
+      "publishTime": "2024-03-10 10:15",
+      "folder": "hmi-best-practices"
+    },
+    {
+      "id": "b端-ui-design",
+      "title": "B端产品UI设计方法论",
+      "subtitle": "企业级产品界面设计的核心原则与实践经验总结",
+      "cover": "articles/b端-ui-design/cover.jpg",
+      "publishTime": "2024-03-05 09:00",
+      "folder": "b端-ui-design"
+    },
+    {
+      "id": "hardware-ui-challenges",
+      "title": "智能硬件UI设计挑战",
+      "subtitle": "面对不同屏幕尺寸和交互方式的硬件产品UI设计解决方案",
+      "cover": "articles/hardware-ui-challenges/cover.jpg",
+      "publishTime": "2024-02-28 16:45",
+      "folder": "hardware-ui-challenges"
+    },
+    {
+      "id": "ux-research-methods",
+      "title": "用户体验研究方法论",
+      "subtitle": "如何通过科学的用户研究提升产品设计的有效性与用户满意度",
+      "cover": "articles/ux-research-methods/cover.jpg",
+      "publishTime": "2024-02-20 11:20",
+      "folder": "ux-research-methods"
+    },
+    {
+      "id": "design-system-guide",
+      "title": "企业级设计系统构建指南",
+      "subtitle": "从零开始构建和维护一套可扩展的设计系统的完整流程",
+      "cover": "articles/design-system-guide/cover.jpg",
+      "publishTime": "2024-02-15 15:10",
+      "folder": "design-system-guide"
     }
   ],
   "works": [
     {
-      "title": "智能车载中控长图",
-      "img": "assets/works/work1.jpg"
-    }
-  ],
-  "posts": [
+      "id": "smart-home-ui",
+      "title": "智能家居控制面板",
+      "intro": "为高端智能家居系统设计的全屋控制界面，整合了灯光、安防、环境、娱乐等系统的可视化控制。采用深色主题减少视觉疲劳，通过卡片式布局清晰展示设备状态，支持语音与触控双模式交互。",
+      "mainImage": "works/smart-home-ui/main.jpg",
+      "folder": "smart-home-ui"
+    },
     {
-      "title": "如何用「场景脚本」指导HMI设计",
-      "summary": "驾驶场景高度动态，我们将任务拆分为可执行的脚本片段，再映射到信息架构。",
-      "img": "assets/posts/post1.jpg"
+      "id": "medical-dashboard",
+      "title": "医疗数据监控仪表盘",
+      "intro": "为医院ICU设计的实时数据监控系统界面，可同时展示多位患者的生命体征数据。采用清晰的数据可视化图表，异常值自动高亮预警，支持多屏幕协同工作，大幅提升医护人员的工作效率。",
+      "mainImage": "works/medical-dashboard/main.jpg",
+      "folder": "medical-dashboard"
+    },
+    {
+      "id": "factory-mes-system",
+      "title": "工厂MES系统界面设计",
+      "intro": "为制造业企业设计的制造执行系统界面，涵盖生产计划、设备监控、质量控制、物料管理等模块。通过直观的数据可视化呈现产线状态，支持实时报警与历史数据分析，帮助工厂实现数字化管理。",
+      "mainImage": "works/factory-mes-system/main.jpg",
+      "folder": "factory-mes-system"
+    },
+    {
+      "id": "car-hmi-design",
+      "title": "智能汽车HMI界面",
+      "intro": "新一代智能电动汽车的人机交互界面设计，整合仪表盘、中控屏、副驾娱乐屏等多屏联动。采用3D可视化技术展示车辆状态，智能语音助手提供自然对话交互，确保驾驶安全与娱乐体验的平衡。",
+      "mainImage": "works/car-hmi-design/main.jpg",
+      "folder": "car-hmi-design"
+    },
+    {
+      "id": "financial-analysis-tool",
+      "title": "金融数据分析平台",
+      "intro": "为金融机构设计的专业数据分析工具界面，支持股票、债券、外汇等多市场数据可视化分析。提供自定义仪表盘、智能预警、数据报告生成等功能，帮助分析师快速做出投资决策。",
+      "mainImage": "works/financial-analysis-tool/main.jpg",
+      "folder": "financial-analysis-tool"
+    },
+    {
+      "id": "education-platform-ui",
+      "title": "在线教育平台界面",
+      "intro": "面向K12阶段的在线教育平台界面设计，包含课程管理、学习进度跟踪、互动课堂、作业批改等功能模块。采用明亮的色彩搭配与趣味性动效，提升学生的学习兴趣与参与度。",
+      "mainImage": "works/education-platform-ui/main.jpg",
+      "folder": "education-platform-ui"
     }
   ]
 }
