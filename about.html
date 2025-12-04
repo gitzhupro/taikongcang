@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 复用index.html的样式 */
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #3b82f6;
+            --text-color: #1f2937;
+            --text-light: #6b7280;
+            --bg-color: #ffffff;
+            --bg-light: #f9fafb;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s ease;
+            --max-width: 1200px;
+            --section-spacing: 80px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 75%;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 导航栏 */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 15px 0;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        
+        .logo-img {
+            height: 40px;
+            width: auto;
+        }
+        
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-left: 10px;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-menu li {
+            margin-left: 40px;
+        }
+        
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 1rem;
+            position: relative;
+            padding: 5px 0;
+            transition: var(--transition);
+        }
+        
+        .nav-menu a:hover {
+            color: var(--primary-color);
+        }
+        
+        .nav-menu a.active {
+            color: var(--primary-color);
+        }
+        
+        .nav-menu a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary-color);
+        }
+        
+        /* 关于页面内容 */
+        main {
+            margin-top: 100px;
+            padding: 80px 0;
+            min-height: 70vh;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .about-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .about-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: var(--text-color);
+        }
+        
+        .about-intro {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            color: var(--text-color);
+            max-width: 800px;
+            margin: 0 auto 60px;
+        }
+        
+        .qrcode-container {
+            margin: 40px 0;
+            padding: 30px;
+            background-color: var(--bg-light);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+        
+        .qrcode-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .qrcode-text {
+            font-size: 1rem;
+            color: var(--text-light);
+        }
+        
+        .recommendation {
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--primary-color);
+            margin-top: 40px;
+            padding: 20px 40px;
+            border-top: 2px solid var(--border-color);
+            border-bottom: 2px solid var(--border-color);
+            max-width: 600px;
+        }
+        
+        /* 页脚 */
+        footer {
+            background-color: var(--bg-light);
+            padding: 60px 0 30px;
+            margin-top: var(--section-spacing);
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .footer-logo-img {
+            height: 40px;
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        .footer-logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .footer-description {
+            max-width: 300px;
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+        
+        .footer-contact {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-light);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 992px) {
+            .container {
+                width: 90%;
+            }
+            
+            .nav-menu li {
+                margin-left: 25px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+            }
+            
+            .nav-menu {
+                display: none;
+            }
+            
+            .about-title {
+                font-size: 2rem;
+            }
+            
+            .about-intro {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img id="site-logo" class="logo-img" src="" alt="网站Logo">
+                <span id="site-title" class="logo-text"></span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="about.html" class="active">关于</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- 关于页面内容 -->
+    <main>
+        <div class="container">
+            <div class="about-container">
+                <h1 id="about-title" class="about-title"></h1>
+                <p id="about-intro" class="about-intro"></p>
+                
+                <div class="qrcode-container">
+                    <img id="about-qrcode" class="qrcode-image" src="" alt="微信二维码">
+                    <p id="wechat-text" class="qrcode-text"></p>
+                </div>
+                
+                <p id="recommendation-text" class="recommendation"></p>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <div class="footer-logo">
+                        <img id="footer-logo" class="footer-logo-img" src="" alt="网站Logo">
+                        <span id="footer-title" class="footer-logo-text"></span>
+                    </div>
+                    <p id="site-description" class="footer-description"></p>
+                    <div class="footer-contact">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>contact@uidesign.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span>+86 138 0000 0000</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p id="copyright-text"></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载网站数据
+            loadSiteData();
+        });
+        
+        // 加载网站数据
+        async function loadSiteData() {
+            try {
+                const response = await fetch('data.json');
+                const siteData = await response.json();
+                
+                // 更新页面内容
+                updatePageContent(siteData);
+                
+            } catch (error) {
+                console.error('加载网站数据失败:', error);
+            }
+        }
+        
+        // 更新页面内容
+        function updatePageContent(siteData) {
+            // 更新SEO相关
+            const aboutTitle = siteData.aboutPage?.title || '关于我们';
+            document.title = aboutTitle + ' | ' + (siteData.siteConfig?.title || 'UI设计服务官网');
+            document.querySelector('meta[name="description"]').setAttribute('content', siteData.siteConfig?.description || '');
+            document.querySelector('meta[name="keywords"]').setAttribute('content', siteData.siteConfig?.keywords || '');
+            
+            // 更新logo和标题
+            document.getElementById('site-logo').src = siteData.siteConfig?.logo || 'assets/logo.png';
+            document.getElementById('site-title').textContent = siteData.siteConfig?.title || '智界设计';
+            document.getElementById('footer-logo').src = siteData.siteConfig?.logo || 'assets/logo.png';
+            document.getElementById('footer-title').textContent = siteData.siteConfig?.title || '智界设计';
+            
+            // 更新关于页面内容
+            document.getElementById('about-title').textContent = siteData.aboutPage?.title || '关于我们';
+            document.getElementById('about-intro').textContent = siteData.aboutPage?.introText || '';
+            document.getElementById('about-qrcode').src = siteData.aboutPage?.qrcode || 'assets/qrcode.png';
+            document.getElementById('recommendation-text').textContent = siteData.aboutPage?.recommendation || '';
+            
+            // 更新联系方式
+            if (siteData.homePage?.contact) {
+                document.getElementById('wechat-text').textContent = siteData.homePage.contact.wechatText || '扫码添加微信咨询';
+            }
+            
+            // 更新页脚
+            document.getElementById('site-description').textContent = siteData.siteConfig?.description || '';
+            document.getElementById('copyright-text').textContent = siteData.siteConfig?.copyright || '';
+        }
+    </script>
+</body>
+</html>
