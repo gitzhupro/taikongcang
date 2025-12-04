@@ -651,14 +651,9 @@
     let siteData = {};
     let allWorks = [];
     let allArticles = [];
-    let worksExpanded = false;
-    let articlesExpanded = false;
     
     // 页面加载完成后初始化
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('页面加载完成，开始初始化...');
-        
-        // 加载网站数据
         loadSiteData();
         
         // 绑定事件
@@ -669,7 +664,6 @@
             if (e.target === this) closeModal();
         });
         
-        // 监听键盘ESC键关闭弹窗
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') closeModal();
         });
@@ -677,212 +671,76 @@
     
     // 加载网站数据
     async function loadSiteData() {
-        console.log('开始加载网站数据...');
         try {
             // 加载网站配置
-            console.log('正在加载 data.json...');
             const response = await fetch('data.json');
-            if (!response.ok) {
-                throw new Error(`data.json 加载失败: ${response.status}`);
-            }
             siteData = await response.json();
-            console.log('data.json 加载成功');
             
             // 更新页面内容
             updatePageContent();
             
-            // 并行加载作品和文章索引
-            console.log('开始并行加载作品和文章...');
-            await Promise.all([
-                loadWorks(),
-                loadArticles()
-            ]);
-            
-            // 设置底部banner
-            const bannerLink = document.getElementById('bottom-banner-link');
-            const bannerImg = document.getElementById('bottom-banner-img');
-            if (siteData.homePage && siteData.homePage.banner) {
-                bannerLink.href = siteData.homePage.banner.link || 'about.html';
-                bannerImg.src = siteData.homePage.banner.image || 'assets/about-banner.jpg';
-                bannerImg.alt = '关于我们';
-            }
+            // 加载作品和文章
+            await loadWorks();
+            await loadArticles();
             
         } catch (error) {
             console.error('加载网站数据失败:', error);
-            showErrorInGrid('works-grid', '数据加载失败，请检查data.json文件');
-            showErrorInGrid('articles-grid', '数据加载失败，请检查data.json文件');
         }
-    }
-    
-    // 在网格中显示错误
-    function showErrorInGrid(gridId, message) {
-        const container = document.getElementById(gridId);
-        container.innerHTML = `<p class="loading" style="color: #ef4444;">${message}</p>`;
     }
     
     // 加载作品索引
     async function loadWorks() {
         try {
-            console.log('正在加载 works/index.json...');
-            const response = await fetchWithTimeout('works/index.json', 5000);
-            
+            const response = await fetch('works/index.json');
             const data = await response.json();
             allWorks = data.works || [];
-            console.log('works/index.json 加载成功，找到', allWorks.length, '个作品');
             
-            // 确保每个作品都有正确的folder字段
-            allWorks.forEach(work => {
-                if (!work.folder && work.id) {
-                    work.folder = work.id;
-                }
-            });
-            
-            // 初始显示3个作品
+            // 显示前3个作品
             displayWorks(allWorks.slice(0, 3));
             
         } catch (error) {
-            console.error('加载作品索引失败:', error);
-            allWorks = getFallbackWorks();
-            displayWorks(allWorks.slice(0, 3));
+            console.error('加载作品失败:', error);
+            // 使用简单后备数据
+            allWorks = [
+                {
+                    id: 'smart-home-ui',
+                    folder: 'smart-home-ui',
+                    title: '智能家居控制面板',
+                    intro: '为高端智能家居系统设计的全屋控制界面...',
+                    mainImage: 'main.jpg'
+                }
+            ];
+            displayWorks(allWorks);
         }
     }
     
     // 加载文章索引
     async function loadArticles() {
         try {
-            console.log('正在加载 articles/index.json...');
-            const response = await fetchWithTimeout('articles/index.json', 5000);
-            
+            const response = await fetch('articles/index.json');
             const data = await response.json();
             allArticles = data.articles || [];
-            console.log('articles/index.json 加载成功，找到', allArticles.length, '篇文章');
             
-            // 按日期排序（最新的在前面）
-            allArticles.sort((a, b) => new Date(b.publishTime) - new Date(a.publishTime));
-            
-            // 确保每个文章都有正确的folder字段
-            allArticles.forEach(article => {
-                if (!article.folder && article.id) {
-                    article.folder = article.id;
-                }
-            });
-            
-            // 初始显示3篇文章
+            // 显示前3篇文章
             displayArticles(allArticles.slice(0, 3));
             
         } catch (error) {
-            console.error('加载文章索引失败:', error);
-            allArticles = getFallbackArticles();
-            displayArticles(allArticles.slice(0, 3));
+            console.error('加载文章失败:', error);
+            allArticles = [];
+            displayArticles(allArticles);
         }
-    }
-    
-    // 带有超时控制的fetch
-    function fetchWithTimeout(url, timeout = 8000) {
-        return Promise.race([
-            fetch(url),
-            new Promise((_, reject) =>
-                setTimeout(() => reject(new Error(`请求超时: ${url}`)), timeout)
-            )
-        ]);
-    }
-    
-    // 后备作品数据
-    function getFallbackWorks() {
-        return [
-            {
-                id: 'smart-home-ui',
-                folder: 'smart-home-ui',
-                title: '智能家居控制面板',
-                intro: '为高端智能家居系统设计的全屋控制界面，整合了灯光、安防、环境、娱乐等系统的可视化控制。采用深色主题减少视觉疲劳，通过卡片式布局清晰展示设备状态，支持语音与触控双模式交互。',
-                mainImage: 'main.jpg'
-            },
-            {
-                id: 'medical-dashboard',
-                folder: 'medical-dashboard',
-                title: '医疗数据监控仪表盘',
-                intro: '为医院ICU设计的实时数据监控系统界面，可同时展示多位患者的生命体征数据。采用清晰的数据可视化图表，异常值自动高亮预警，支持多屏幕协同工作，大幅提升医护人员的工作效率。',
-                mainImage: 'main.jpg'
-            },
-            {
-                id: 'factory-mes-system',
-                folder: 'factory-mes-system',
-                title: '工厂MES系统界面设计',
-                intro: '为制造业企业设计的制造执行系统界面，涵盖生产计划、设备监控、质量控制、物料管理等模块。通过直观的数据可视化呈现产线状态，支持实时报警与历史数据分析，帮助工厂实现数字化管理。',
-                mainImage: 'main.jpg'
-            }
-        ];
-    }
-    
-    // 后备文章数据
-    function getFallbackArticles() {
-        return [
-            {
-                id: 'design-trends-2024',
-                folder: 'design-trends-2024',
-                title: '2024年UI设计趋势分析',
-                subtitle: '探索新一年中最具影响力的设计趋势和用户体验创新方向',
-                cover: 'cover.jpg',
-                publishTime: '2024-03-15 14:30'
-            },
-            {
-                id: 'hmi-best-practices',
-                folder: 'hmi-best-practices',
-                title: '智能座舱HMI设计实践',
-                subtitle: '汽车智能座舱人机交互设计的关键原则与最佳实践案例分享',
-                cover: 'cover.jpg',
-                publishTime: '2024-03-10 10:15'
-            },
-            {
-                id: 'accessibility-design',
-                folder: 'accessibility-design',
-                title: '无障碍设计指南',
-                subtitle: '如何创建对所有人友好的数字产品，包括残障用户',
-                cover: 'cover.jpg',
-                publishTime: '2024-03-05 09:20'
-            }
-        ];
     }
     
     // 更新页面内容
     function updatePageContent() {
-        // 更新SEO相关
-        document.title = siteData.siteConfig?.title || 'UI设计服务官网';
-        document.querySelector('meta[name="description"]').setAttribute('content', siteData.siteConfig?.description || '');
-        document.querySelector('meta[name="keywords"]').setAttribute('content', siteData.siteConfig?.keywords || '');
+        // 简化更新逻辑
+        const title = siteData.siteConfig?.title || 'UI设计服务官网';
+        document.title = title;
+        document.getElementById('site-title').textContent = title;
+        document.getElementById('footer-title').textContent = title;
         
-        // 更新logo和标题
-        const siteLogo = document.getElementById('site-logo');
-        siteLogo.src = siteData.siteConfig?.logo || 'assets/logo.png';
-        siteLogo.onerror = function() {
-            this.src = 'https://via.placeholder.com/40x40/2563eb/ffffff?text=Logo';
-        };
-        
-        document.getElementById('site-title').textContent = siteData.siteConfig?.title || '智界设计';
-        
-        const footerLogo = document.getElementById('footer-logo');
-        footerLogo.src = siteData.siteConfig?.logo || 'assets/logo.png';
-        footerLogo.onerror = function() {
-            this.src = 'https://via.placeholder.com/40x40/2563eb/ffffff?text=Logo';
-        };
-        
-        document.getElementById('footer-title').textContent = siteData.siteConfig?.title || '智界设计';
-        
-        // 更新介绍文本
-        document.getElementById('intro-text').textContent = siteData.homePage?.introText || '';
-        
-        // 更新页脚
-        document.getElementById('site-description').textContent = siteData.siteConfig?.description || '';
-        document.getElementById('copyright-text').textContent = siteData.siteConfig?.copyright || '';
-        
-        // 更新联系方式
-        if (siteData.homePage?.contact) {
-            const wechatQr = document.getElementById('wechat-qr');
-            wechatQr.src = siteData.homePage.contact.wechatQr || 'assets/qrcode.png';
-            wechatQr.onerror = function() {
-                this.src = 'https://via.placeholder.com/120x120/10b981/ffffff?text=QR';
-            };
-            document.getElementById('wechat-text').textContent = siteData.homePage.contact.wechatText || '扫码添加微信咨询';
+        if (siteData.homePage?.introText) {
+            document.getElementById('intro-text').textContent = siteData.homePage.introText;
         }
     }
     
@@ -897,16 +755,13 @@
         
         let html = '';
         works.forEach(work => {
-            // 构建正确的图片路径
-            const imageSrc = `works/${work.folder}/${work.mainImage}`;
-            
             html += `
             <div class="grid-item" data-id="${work.id}" data-type="work">
-                <img class="item-image" src="${imageSrc}" alt="${work.title}" 
-                     onerror="this.src='https://via.placeholder.com/800x600/3b82f6/ffffff?text=${encodeURIComponent(work.title)}'">
+                <img class="item-image" src="works/${work.folder}/${work.mainImage}" alt="${work.title}" 
+                     onerror="this.src='https://via.placeholder.com/800x600/3b82f6/ffffff?text=作品'">
                 <div class="item-content">
                     <h3 class="item-title">${work.title}</h3>
-                    <p class="item-subtitle">${work.intro.substring(0, 80)}${work.intro.length > 80 ? '...' : ''}</p>
+                    <p class="item-subtitle">${work.intro.substring(0, 80)}...</p>
                 </div>
             </div>
             `;
@@ -914,12 +769,11 @@
         
         container.innerHTML = html;
         
-        // 为每个作品项添加点击事件
+        // 添加点击事件
         document.querySelectorAll('#works-grid .grid-item').forEach(item => {
             item.addEventListener('click', function() {
                 const id = this.getAttribute('data-id');
-                const type = this.getAttribute('data-type');
-                openModal(id, type);
+                openModal(id, 'work');
             });
         });
     }
@@ -935,16 +789,13 @@
         
         let html = '';
         articles.forEach(article => {
-            // 构建正确的图片路径
-            const coverSrc = `articles/${article.folder}/${article.cover}`;
-            
             html += `
             <div class="grid-item" data-id="${article.id}" data-type="article">
-                <img class="item-image" src="${coverSrc}" alt="${article.title}" 
-                     onerror="this.src='https://via.placeholder.com/800x600/10b981/ffffff?text=${encodeURIComponent(article.title)}'">
+                <img class="item-image" src="articles/${article.folder}/${article.cover}" alt="${article.title}" 
+                     onerror="this.src='https://via.placeholder.com/800x600/10b981/ffffff?text=文章'">
                 <div class="item-content">
                     <h3 class="item-title">${article.title}</h3>
-                    <p class="item-subtitle">${article.subtitle.substring(0, 60)}${article.subtitle.length > 60 ? '...' : ''}</p>
+                    <p class="item-subtitle">${article.subtitle.substring(0, 60)}...</p>
                 </div>
             </div>
             `;
@@ -952,53 +803,23 @@
         
         container.innerHTML = html;
         
-        // 为每个文章项添加点击事件
+        // 添加点击事件
         document.querySelectorAll('#articles-grid .grid-item').forEach(item => {
             item.addEventListener('click', function() {
                 const id = this.getAttribute('data-id');
-                const type = this.getAttribute('data-type');
-                openModal(id, type);
+                openModal(id, 'article');
             });
         });
     }
     
-    // 切换作品展开状态
-    function toggleWorksExpand() {
-        worksExpanded = !worksExpanded;
-        const btn = document.getElementById('works-more-btn');
-        
-        if (worksExpanded) {
-            displayWorks(allWorks);
-            btn.innerHTML = '收起作品 <i class="fas fa-chevron-up"></i>';
-        } else {
-            displayWorks(allWorks.slice(0, 3));
-            btn.innerHTML = '更多作品 <i class="fas fa-chevron-right"></i>';
-        }
-    }
-    
-    // 切换文章展开状态
-    function toggleArticlesExpand() {
-        articlesExpanded = !articlesExpanded;
-        const btn = document.getElementById('articles-more-btn');
-        
-        if (articlesExpanded) {
-            displayArticles(allArticles);
-            btn.innerHTML = '收起文章 <i class="fas fa-chevron-up"></i>';
-        } else {
-            displayArticles(allArticles.slice(0, 3));
-            btn.innerHTML = '更多文章 <i class="fas fa-chevron-right"></i>';
-        }
-    }
-    
-    // 打开弹窗 - 主要修复函数
+    // 打开弹窗 - 核心修复
     async function openModal(id, type) {
-        console.log(`打开弹窗: ${type} - ${id}`);
+        console.log(`打开${type}: ${id}`);
         
-        // 显示弹窗
+        // 立即显示弹窗和加载状态
         document.getElementById('modal-overlay').classList.add('active');
         document.body.style.overflow = 'hidden';
         
-        // 显示加载状态
         document.getElementById('modal-body').innerHTML = `
             <div class="loading">
                 <div class="spinner"></div>
@@ -1006,207 +827,162 @@
             </div>
         `;
         
-        // 设置超时，防止无限加载
-        const loadingTimeout = setTimeout(() => {
-            console.warn('加载超时，显示备用内容');
-            showFallbackContent(id, type);
-        }, 8000);
-        
         try {
-            // 查找对应的内容
+            // 查找内容
             let content;
-            let folder;
-            
             if (type === 'work') {
                 content = allWorks.find(w => w.id === id);
-                folder = 'works';
-            } else if (type === 'article') {
+            } else {
                 content = allArticles.find(a => a.id === id);
-                folder = 'articles';
             }
             
             if (!content) {
-                throw new Error(`未找到ID为"${id}"的${type}`);
+                throw new Error('内容不存在');
             }
             
-            console.log(`尝试加载: ${folder}/${content.folder}/index.md`);
+            console.log(`尝试加载: ${type}s/${content.folder}/index.md`);
             
             // 尝试加载MD文件
-            let markdown = '';
-            try {
-                const response = await fetchWithTimeout(`${folder}/${content.folder}/index.md`, 5000);
-                
-                if (!response.ok) {
-                    console.warn(`MD文件加载失败: ${response.status}`);
-                    // 尝试备用路径
-                    const altResponse = await fetchWithTimeout(`./${folder}/${content.folder}/index.md`, 3000);
-                    if (!altResponse.ok) throw new Error('备用路径也失败');
-                    markdown = await altResponse.text();
-                } else {
-                    markdown = await response.text();
-                }
-                
-                console.log('MD文件加载成功');
-                
-            } catch (mdError) {
-                console.warn('MD文件加载失败，使用备用内容:', mdError.message);
-                // MD文件加载失败，显示备用内容
-                showFallbackContent(id, type, content);
-                clearTimeout(loadingTimeout);
+            const mdPath = `${type}s/${content.folder}/index.md`;
+            const response = await fetch(mdPath);
+            
+            if (!response.ok) {
+                console.error(`文件加载失败: ${response.status}`);
+                // 使用简介作为后备内容
+                showContentWithFallback(content, type, true);
                 return;
             }
             
-            // 清除超时
-            clearTimeout(loadingTimeout);
+            const markdown = await response.text();
+            console.log('MD文件加载成功');
             
-            // 解析Markdown
-            let htmlContent = '';
-            try {
-                const metadata = parseFrontMatter(markdown);
-                const contentText = markdown.replace(/---[\s\S]*?---/, '').trim();
-                htmlContent = marked.parse(contentText);
-            } catch (parseError) {
-                console.warn('Markdown解析失败:', parseError);
-                htmlContent = `<p>内容解析失败，显示原始内容：</p><pre>${markdown.substring(0, 500)}...</pre>`;
+            // 解析Front Matter
+            const frontMatterMatch = markdown.match(/^---\n([\s\S]*?)\n---\n/);
+            let contentText = markdown;
+            let metadata = {};
+            
+            if (frontMatterMatch) {
+                contentText = markdown.replace(/^---\n[\s\S]*?\n---\n/, '');
+                const frontMatter = frontMatterMatch[1];
+                frontMatter.split('\n').forEach(line => {
+                    const [key, ...valueParts] = line.split(':');
+                    if (key && valueParts.length > 0) {
+                        metadata[key.trim()] = valueParts.join(':').trim().replace(/^['"]|['"]$/g, '');
+                    }
+                });
             }
             
-            // 构建弹窗内容
+            // 转换Markdown为HTML
+            const htmlContent = marked.parse(contentText.trim());
+            
+            // 显示内容
+            showContent(content, type, htmlContent, metadata);
+            
+        } catch (error) {
+            console.error('加载失败:', error);
+            // 查找内容并显示后备
+            let content;
             if (type === 'work') {
-                document.getElementById('modal-body').innerHTML = `
-                    <h1 class="modal-title">${content.title}</h1>
-                    <div class="modal-meta">
-                        <p class="modal-subtitle">${content.intro || ''}</p>
-                    </div>
-                    <div class="modal-text">${htmlContent}</div>
-                `;
-            } else if (type === 'article') {
-                document.getElementById('modal-body').innerHTML = `
-                    <h1 class="modal-title">${content.title}</h1>
-                    <p class="modal-subtitle">${content.subtitle || ''}</p>
-                    <div class="modal-meta">
-                        <p class="modal-date">发布时间：${formatDate(content.publishTime)}</p>
-                    </div>
-                    <div class="modal-text">${htmlContent}</div>
-                `;
+                content = allWorks.find(w => w.id === id);
+            } else {
+                content = allArticles.find(a => a.id === id);
             }
             
-            // 处理弹窗中的图片路径
+            if (content) {
+                showContentWithFallback(content, type, false);
+            } else {
+                document.getElementById('modal-body').innerHTML = `
+                    <h1 class="modal-title">加载失败</h1>
+                    <div class="modal-text">
+                        <p>抱歉，无法加载内容。</p>
+                        <p>错误: ${error.message}</p>
+                        <button onclick="closeModal()" style="margin-top: 20px; padding: 10px 20px; background: var(--primary-color); color: white; border: none; border-radius: 6px; cursor: pointer;">关闭</button>
+                    </div>
+                `;
+            }
+        }
+    }
+    
+    // 显示内容（成功加载MD文件）
+    function showContent(content, type, htmlContent, metadata = {}) {
+        let modalHTML = '';
+        
+        if (type === 'work') {
+            modalHTML = `
+                <h1 class="modal-title">${metadata.title || content.title}</h1>
+                <div class="modal-meta">
+                    <p class="modal-subtitle">${metadata.intro || content.intro || ''}</p>
+                </div>
+                <div class="modal-text">${htmlContent}</div>
+            `;
+        } else {
+            modalHTML = `
+                <h1 class="modal-title">${metadata.title || content.title}</h1>
+                <p class="modal-subtitle">${metadata.subtitle || content.subtitle || ''}</p>
+                <div class="modal-meta">
+                    <p class="modal-date">发布时间：${formatDate(metadata.publishTime || content.publishTime)}</p>
+                </div>
+                <div class="modal-text">${htmlContent}</div>
+            `;
+        }
+        
+        document.getElementById('modal-body').innerHTML = modalHTML;
+        
+        // 修复图片路径
+        setTimeout(() => {
             const modalText = document.querySelector('.modal-text');
             if (modalText) {
                 const images = modalText.querySelectorAll('img');
                 images.forEach(img => {
                     const src = img.getAttribute('src');
-                    if (src && !src.includes('http') && !src.includes('data:')) {
-                        img.src = `${folder}/${content.folder}/${src}`;
-                        img.onerror = function() {
-                            this.src = type === 'work' 
-                                ? 'https://via.placeholder.com/800x600/3b82f6/ffffff?text=设计作品' 
-                                : 'https://via.placeholder.com/800x600/10b981/ffffff?text=设计文章';
-                        };
+                    if (src && !src.startsWith('http') && !src.startsWith('data:')) {
+                        img.src = `${type}s/${content.folder}/${src}`;
                     }
                 });
             }
-            
-        } catch (error) {
-            console.error('加载弹窗内容失败:', error);
-            clearTimeout(loadingTimeout);
-            showErrorContent(id, type, error.message);
-        }
+        }, 100);
     }
     
-    // 显示备用内容（当MD文件无法加载时）
-    function showFallbackContent(id, type, content = null) {
-        console.log('显示备用内容');
+    // 显示后备内容（MD文件加载失败）
+    function showContentWithFallback(content, type, fileMissing = false) {
+        let modalHTML = '';
         
-        if (!content) {
-            // 尝试从数组中找到内容
-            if (type === 'work') {
-                content = allWorks.find(w => w.id === id);
-            } else if (type === 'article') {
-                content = allArticles.find(a => a.id === id);
-            }
-        }
-        
-        if (!content) {
-            showErrorContent(id, type, '内容不存在');
-            return;
-        }
-        
-        // 生成备用内容
-        let html = '';
         if (type === 'work') {
-            html = `
+            modalHTML = `
                 <h1 class="modal-title">${content.title}</h1>
                 <div class="modal-meta">
                     <p class="modal-subtitle">${content.intro || ''}</p>
                 </div>
                 <div class="modal-text">
-                    <p><strong>抱歉，详细内容暂时无法加载。</strong></p>
-                    <p>${content.intro}</p>
-                    <div style="margin: 30px 0; padding: 20px; background: var(--bg-light); border-radius: 8px;">
-                        <p>💡 <strong>提示：</strong></p>
-                        <p>请确保在 <code>works/${content.folder}/index.md</code> 文件中添加Markdown内容。</p>
-                        <p>文件结构示例：</p>
-                        <pre style="background: #1e293b; color: #e2e8f0; padding: 15px; border-radius: 6px; font-size: 0.9rem;">
----
-title: "${content.title}"
-intro: "${content.intro}"
----
-
-# ${content.title}
-
-在这里添加详细的项目介绍...
-
-## 设计亮点
-- 亮点一
-- 亮点二
-- 亮点三
-
-## 技术实现
-详细说明...</pre>
+                    <p>${content.intro || ''}</p>
+                    ${fileMissing ? `
+                    <div style="margin-top: 30px; padding: 15px; background: #f3f4f6; border-radius: 8px; border-left: 4px solid #3b82f6;">
+                        <p><strong>提示：</strong>详细内容文件未找到</p>
+                        <p>请检查文件 <code>works/${content.folder}/index.md</code> 是否存在</p>
                     </div>
+                    ` : ''}
                 </div>
             `;
-        } else if (type === 'article') {
-            html = `
+        } else {
+            modalHTML = `
                 <h1 class="modal-title">${content.title}</h1>
                 <p class="modal-subtitle">${content.subtitle || ''}</p>
                 <div class="modal-meta">
                     <p class="modal-date">发布时间：${formatDate(content.publishTime)}</p>
                 </div>
                 <div class="modal-text">
-                    <p><strong>抱歉，文章内容暂时无法加载。</strong></p>
-                    <p>${content.subtitle}</p>
-                    <div style="margin: 30px 0; padding: 20px; background: var(--bg-light); border-radius: 8px;">
-                        <p>💡 <strong>提示：</strong></p>
-                        <p>请确保在 <code>articles/${content.folder}/index.md</code> 文件中添加Markdown内容。</p>
+                    <p>${content.subtitle || ''}</p>
+                    ${fileMissing ? `
+                    <div style="margin-top: 30px; padding: 15px; background: #f3f4f6; border-radius: 8px; border-left: 4px solid #10b981;">
+                        <p><strong>提示：</strong>详细内容文件未找到</p>
+                        <p>请检查文件 <code>articles/${content.folder}/index.md</code> 是否存在</p>
                     </div>
+                    ` : ''}
                 </div>
             `;
         }
         
-        document.getElementById('modal-body').innerHTML = html;
-    }
-    
-    // 显示错误内容
-    function showErrorContent(id, type, errorMessage) {
-        document.getElementById('modal-body').innerHTML = `
-            <h1 class="modal-title">加载失败</h1>
-            <div class="modal-text">
-                <p>抱歉，无法加载请求的内容。</p>
-                <p><strong>错误信息：</strong> ${errorMessage}</p>
-                <div style="margin-top: 30px; padding: 20px; background: #fef2f2; border-radius: 8px; border-left: 4px solid #ef4444;">
-                    <h3 style="color: #dc2626; margin-bottom: 10px;">解决方案：</h3>
-                    <ol style="margin-left: 20px;">
-                        <li>检查 <code>${type}s/${id}/index.md</code> 文件是否存在</li>
-                        <li>确认文件路径和名称正确</li>
-                        <li>如果是本地开发，请使用本地服务器（如：<code>python -m http.server</code>）</li>
-                        <li>检查浏览器控制台获取更多错误信息</li>
-                    </ol>
-                </div>
-                <button onclick="closeModal()" style="margin-top: 20px; padding: 10px 20px; background: var(--primary-color); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500;">关闭弹窗</button>
-            </div>
-        `;
+        document.getElementById('modal-body').innerHTML = modalHTML;
     }
     
     // 关闭弹窗
@@ -1215,54 +991,11 @@ intro: "${content.intro}"
         document.body.style.overflow = 'auto';
     }
     
-    // 解析Markdown的front matter
-    function parseFrontMatter(markdown) {
-        const frontMatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n/;
-        const match = markdown.match(frontMatterRegex);
-        
-        if (!match) {
-            return {
-                title: '',
-                subtitle: '',
-                publishTime: '',
-                intro: ''
-            };
-        }
-        
-        const frontMatter = match[1];
-        const lines = frontMatter.split('\n');
-        const metadata = {};
-        
-        lines.forEach(line => {
-            const colonIndex = line.indexOf(':');
-            if (colonIndex > 0) {
-                const key = line.substring(0, colonIndex).trim();
-                let value = line.substring(colonIndex + 1).trim();
-                
-                if (value.startsWith('"') && value.endsWith('"')) {
-                    value = value.substring(1, value.length - 1);
-                } else if (value.startsWith("'") && value.endsWith("'")) {
-                    value = value.substring(1, value.length - 1);
-                }
-                
-                metadata[key] = value;
-            }
-        });
-        
-        return metadata;
-    }
-    
     // 格式化日期
     function formatDate(dateString) {
         if (!dateString) return '未指定';
         const date = new Date(dateString);
-        if (isNaN(date.getTime())) return dateString;
-        
-        return date.toLocaleDateString('zh-CN', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
+        return date.toLocaleDateString('zh-CN');
     }
 </script>
 </body>
