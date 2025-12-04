@@ -719,6 +719,16 @@
             const data = await response.json();
             allWorks = data.works || [];
             
+            // 调试：打印加载的作品数据
+            console.log('加载的作品数据:', allWorks);
+            
+            // 确保每个作品都有正确的folder字段（如果不存在，使用id作为folder名）
+            allWorks.forEach(work => {
+                if (!work.folder && work.id) {
+                    work.folder = work.id;
+                }
+            });
+            
             // 初始显示3个作品
             displayWorks(allWorks.slice(0, 3));
             
@@ -746,6 +756,13 @@
             // 按日期排序（最新的在前面）
             allArticles.sort((a, b) => new Date(b.publishTime) - new Date(a.publishTime));
             
+            // 确保每个文章都有正确的folder字段（如果不存在，使用id作为folder名）
+            allArticles.forEach(article => {
+                if (!article.folder && article.id) {
+                    article.folder = article.id;
+                }
+            });
+            
             // 初始显示3篇文章
             displayArticles(allArticles.slice(0, 3));
             
@@ -764,21 +781,21 @@
                 folder: 'smart-home-ui',
                 title: '智能家居控制面板',
                 intro: '为高端智能家居系统设计的全屋控制界面，整合了灯光、安防、环境、娱乐等系统的可视化控制。',
-                mainImage: 'works/smart-home-ui/main.jpg'
+                mainImage: 'main.jpg'
             },
             {
                 id: 'medical-dashboard',
                 folder: 'medical-dashboard',
                 title: '医疗数据监控仪表盘',
                 intro: '为医院ICU设计的实时数据监控系统界面，可同时展示多位患者的生命体征数据。',
-                mainImage: 'works/medical-dashboard/main.jpg'
+                mainImage: 'main.jpg'
             },
             {
                 id: 'ecommerce-redesign',
                 folder: 'ecommerce-redesign',
                 title: '电商平台用户体验优化',
                 intro: '为大型电商平台进行的全面UI/UX重构，提升用户购物体验和转化率。',
-                mainImage: 'works/ecommerce-redesign/main.jpg'
+                mainImage: 'main.jpg'
             }
         ];
     }
@@ -791,7 +808,7 @@
                 folder: 'design-trends-2024',
                 title: '2024年UI设计趋势分析',
                 subtitle: '探索新一年中最具影响力的设计趋势和用户体验创新方向',
-                cover: 'articles/design-trends-2024/cover.jpg',
+                cover: 'cover.jpg',
                 publishTime: '2024-03-15 14:30'
             },
             {
@@ -799,7 +816,7 @@
                 folder: 'hmi-best-practices',
                 title: '智能座舱HMI设计实践',
                 subtitle: '汽车智能座舱人机交互设计的关键原则与最佳实践案例分享',
-                cover: 'articles/hmi-best-practices/cover.jpg',
+                cover: 'cover.jpg',
                 publishTime: '2024-03-10 10:15'
             },
             {
@@ -807,7 +824,7 @@
                 folder: 'accessibility-design',
                 title: '无障碍设计指南',
                 subtitle: '如何创建对所有人友好的数字产品，包括残障用户',
-                cover: 'articles/accessibility-design/cover.jpg',
+                cover: 'cover.jpg',
                 publishTime: '2024-03-05 09:20'
             }
         ];
@@ -851,7 +868,10 @@
         
         let html = '';
         works.forEach(work => {
-            const imageSrc = `works/${work.folder}/${work.mainImage}`;
+            // 构建正确的图片路径
+            const imageSrc = work.mainImage.includes('http') || work.mainImage.includes('data:') 
+                ? work.mainImage 
+                : `works/${work.folder}/${work.mainImage}`;
             
             html += `
             <div class="grid-item" data-id="${work.id}" data-type="work">
@@ -887,7 +907,10 @@
         
         let html = '';
         articles.forEach(article => {
-            const coverSrc = `articles/${article.folder}/${article.cover}`;
+            // 构建正确的图片路径
+            const coverSrc = article.cover.includes('http') || article.cover.includes('data:') 
+                ? article.cover 
+                : `articles/${article.folder}/${article.cover}`;
             
             html += `
             <div class="grid-item" data-id="${article.id}" data-type="article">
@@ -971,13 +994,25 @@
                 folder = 'articles';
             }
             
-            if (!content) throw new Error('内容不存在');
+            if (!content) {
+                throw new Error(`未找到ID为"${id}"的${type === 'work' ? '作品' : '文章'}`);
+            }
+            
+            console.log(`正在加载${type}: ${id}, folder: ${content.folder}`);
             
             // 加载Markdown文件
-            const response = await fetch(`${folder}/${content.folder}/index.md`);
-            if (!response.ok) throw new Error('Markdown文件加载失败');
+            const mdPath = `${folder}/${content.folder}/index.md`;
+            console.log(`尝试加载MD文件: ${mdPath}`);
+            
+            const response = await fetch(mdPath);
+            if (!response.ok) {
+                console.error(`MD文件加载失败: ${response.status} ${response.statusText}`);
+                throw new Error(`无法加载${type === 'work' ? '作品' : '文章'}详情内容`);
+            }
             
             const markdown = await response.text();
+            console.log(`成功加载MD文件，长度: ${markdown.length}字符`);
+            
             const metadata = parseFrontMatter(markdown);
             const htmlContent = marked.parse(markdown.replace(/---[\s\S]*?---/, '').trim());
             
@@ -1006,8 +1041,20 @@
             if (modalText) {
                 const images = modalText.querySelectorAll('img');
                 images.forEach(img => {
-                    if (!img.src.includes('http') && !img.src.includes('data:')) {
-                        img.src = `${folder}/${id}/${img.getAttribute('src')}`;
+                    const src = img.getAttribute('src');
+                    if (src && !src.includes('http') && !src.includes('data:')) {
+                        // 处理相对路径的图片
+                        const newSrc = `${folder}/${content.folder}/${src}`;
+                        console.log(`修复图片路径: ${src} -> ${newSrc}`);
+                        img.src = newSrc;
+                        
+                        // 添加错误处理
+                        img.onerror = function() {
+                            console.error(`无法加载图片: ${newSrc}`);
+                            this.src = type === 'work' 
+                                ? 'https://via.placeholder.com/800x600/3b82f6/ffffff?text=设计作品' 
+                                : 'https://via.placeholder.com/800x600/10b981/ffffff?text=设计文章';
+                        };
                     }
                 });
             }
@@ -1017,8 +1064,10 @@
             document.getElementById('modal-body').innerHTML = `
                 <h1 class="modal-title">加载失败</h1>
                 <div class="modal-text">
-                    <p>抱歉，无法加载请求的内容。请检查文件是否存在或稍后重试。</p>
+                    <p>抱歉，无法加载请求的内容。</p>
                     <p>错误信息: ${error.message}</p>
+                    <p>请检查控制台获取更多信息。</p>
+                    <button onclick="closeModal()" style="margin-top: 20px; padding: 10px 20px; background: var(--primary-color); color: white; border: none; border-radius: 6px; cursor: pointer;">关闭</button>
                 </div>
             `;
         }
