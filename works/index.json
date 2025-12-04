@@ -1,0 +1,46 @@
+{
+  "works": [
+    {
+      "id": "smart-home-ui",
+      "folder": "smart-home-ui",
+      "title": "智能家居控制面板",
+      "intro": "为高端智能家居系统设计的全屋控制界面，整合了灯光、安防、环境、娱乐等系统的可视化控制。采用深色主题减少视觉疲劳，通过卡片式布局清晰展示设备状态，支持语音与触控双模式交互。",
+      "mainImage": "main.jpg"
+    },
+    {
+      "id": "medical-dashboard",
+      "folder": "medical-dashboard",
+      "title": "医疗数据监控仪表盘",
+      "intro": "为医院ICU设计的实时数据监控系统界面，可同时展示多位患者的生命体征数据。采用清晰的数据可视化图表，异常值自动高亮预警，支持多屏幕协同工作，大幅提升医护人员的工作效率。",
+      "mainImage": "main.jpg"
+    },
+    {
+      "id": "factory-mes-system",
+      "folder": "factory-mes-system",
+      "title": "工厂MES系统界面设计",
+      "intro": "为制造业企业设计的制造执行系统界面，涵盖生产计划、设备监控、质量控制、物料管理等模块。通过直观的数据可视化呈现产线状态，支持实时报警与历史数据分析，帮助工厂实现数字化管理。",
+      "mainImage": "main.jpg"
+    },
+    {
+      "id": "car-hmi-design",
+      "folder": "car-hmi-design",
+      "title": "智能汽车HMI界面",
+      "intro": "新一代智能电动汽车的人机交互界面设计，整合仪表盘、中控屏、副驾娱乐屏等多屏联动。采用3D可视化技术展示车辆状态，智能语音助手提供自然对话交互，确保驾驶安全与娱乐体验的平衡。",
+      "mainImage": "main.jpg"
+    },
+    {
+      "id": "financial-analysis-tool",
+      "folder": "financial-analysis-tool",
+      "title": "金融数据分析平台",
+      "intro": "为金融机构设计的专业数据分析工具界面，支持股票、债券、外汇等多市场数据可视化分析。提供自定义仪表盘、智能预警、数据报告生成等功能，帮助分析师快速做出投资决策。",
+      "mainImage": "main.jpg"
+    },
+    {
+      "id": "education-platform-ui",
+      "folder": "education-platform-ui",
+      "title": "在线教育平台界面",
+      "intro": "面向K12阶段的在线教育平台界面设计，包含课程管理、学习进度跟踪、互动课堂、作业批改等功能模块。采用明亮的色彩搭配与趣味性动效，提升学生的学习兴趣与参与度。",
+      "mainImage": "main.jpg"
+    }
+  ]
+}
