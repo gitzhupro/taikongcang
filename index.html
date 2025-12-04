@@ -656,6 +656,8 @@
     
     // 页面加载完成后初始化
     document.addEventListener('DOMContentLoaded', function() {
+        console.log('页面加载完成，开始初始化...');
+        
         // 加载网站数据
         loadSiteData();
         
@@ -675,15 +677,22 @@
     
     // 加载网站数据
     async function loadSiteData() {
+        console.log('开始加载网站数据...');
         try {
             // 加载网站配置
+            console.log('正在加载 data.json...');
             const response = await fetch('data.json');
+            if (!response.ok) {
+                throw new Error(`data.json 加载失败: ${response.status}`);
+            }
             siteData = await response.json();
+            console.log('data.json 加载成功:', siteData);
             
             // 更新页面内容
             updatePageContent();
             
             // 并行加载作品和文章索引
+            console.log('开始并行加载作品和文章...');
             await Promise.all([
                 loadWorks(),
                 loadArticles()
@@ -696,6 +705,7 @@
                 bannerLink.href = siteData.homePage.banner.link || 'about.html';
                 bannerImg.src = siteData.homePage.banner.image || 'assets/about-banner.jpg';
                 bannerImg.alt = '关于我们';
+                console.log('底部banner设置完成');
             }
             
         } catch (error) {
@@ -708,25 +718,26 @@
     // 加载作品索引
     async function loadWorks() {
         try {
+            console.log('正在加载 works/index.json...');
             const response = await fetch('works/index.json');
             if (!response.ok) {
+                console.error(`works/index.json 加载失败: ${response.status}`);
                 // 如果索引文件不存在，使用后备数据
                 allWorks = getFallbackWorks();
-                displayWorks(allWorks.slice(0, 3)); // 改为显示3个
+                displayWorks(allWorks.slice(0, 3));
                 return;
             }
             
             const data = await response.json();
             allWorks = data.works || [];
-            
-            // 调试：打印加载的作品数据
-            console.log('加载的作品数据:', allWorks);
+            console.log('works/index.json 加载成功，找到', allWorks.length, '个作品:', allWorks);
             
             // 确保每个作品都有正确的folder字段（如果不存在，使用id作为folder名）
             allWorks.forEach(work => {
                 if (!work.folder && work.id) {
                     work.folder = work.id;
                 }
+                console.log(`作品: ${work.title}, folder: ${work.folder}, mainImage: ${work.mainImage}`);
             });
             
             // 初始显示3个作品
@@ -742,16 +753,19 @@
     // 加载文章索引
     async function loadArticles() {
         try {
+            console.log('正在加载 articles/index.json...');
             const response = await fetch('articles/index.json');
             if (!response.ok) {
+                console.error(`articles/index.json 加载失败: ${response.status}`);
                 // 如果索引文件不存在，使用后备数据
                 allArticles = getFallbackArticles();
-                displayArticles(allArticles.slice(0, 3)); // 改为显示3个
+                displayArticles(allArticles.slice(0, 3));
                 return;
             }
             
             const data = await response.json();
             allArticles = data.articles || [];
+            console.log('articles/index.json 加载成功，找到', allArticles.length, '篇文章:', allArticles);
             
             // 按日期排序（最新的在前面）
             allArticles.sort((a, b) => new Date(b.publishTime) - new Date(a.publishTime));
@@ -761,6 +775,7 @@
                 if (!article.folder && article.id) {
                     article.folder = article.id;
                 }
+                console.log(`文章: ${article.title}, folder: ${article.folder}, cover: ${article.cover}`);
             });
             
             // 初始显示3篇文章
@@ -780,14 +795,14 @@
                 id: 'smart-home-ui',
                 folder: 'smart-home-ui',
                 title: '智能家居控制面板',
-                intro: '为高端智能家居系统设计的全屋控制界面，整合了灯光、安防、环境、娱乐等系统的可视化控制。',
+                intro: '为高端智能家居系统设计的全屋控制界面，整合了灯光、安防、环境、娱乐等系统的可视化控制。采用深色主题减少视觉疲劳，通过卡片式布局清晰展示设备状态，支持语音与触控双模式交互。',
                 mainImage: 'main.jpg'
             },
             {
                 id: 'medical-dashboard',
                 folder: 'medical-dashboard',
                 title: '医疗数据监控仪表盘',
-                intro: '为医院ICU设计的实时数据监控系统界面，可同时展示多位患者的生命体征数据。',
+                intro: '为医院ICU设计的实时数据监控系统界面，可同时展示多位患者的生命体征数据。采用清晰的数据可视化图表，异常值自动高亮预警，支持多屏幕协同工作，大幅提升医护人员的工作效率。',
                 mainImage: 'main.jpg'
             },
             {
@@ -832,15 +847,29 @@
     
     // 更新页面内容
     function updatePageContent() {
+        console.log('更新页面内容...');
         // 更新SEO相关
         document.title = siteData.siteConfig?.title || 'UI设计服务官网';
         document.querySelector('meta[name="description"]').setAttribute('content', siteData.siteConfig?.description || '');
         document.querySelector('meta[name="keywords"]').setAttribute('content', siteData.siteConfig?.keywords || '');
         
         // 更新logo和标题
-        document.getElementById('site-logo').src = siteData.siteConfig?.logo || 'assets/logo.png';
+        const siteLogo = document.getElementById('site-logo');
+        siteLogo.src = siteData.siteConfig?.logo || 'assets/logo.png';
+        siteLogo.onerror = function() {
+            console.error('Logo图片加载失败:', this.src);
+            this.src = 'https://via.placeholder.com/40x40/2563eb/ffffff?text=Logo';
+        };
+        
         document.getElementById('site-title').textContent = siteData.siteConfig?.title || '智界设计';
-        document.getElementById('footer-logo').src = siteData.siteConfig?.logo || 'assets/logo.png';
+        
+        const footerLogo = document.getElementById('footer-logo');
+        footerLogo.src = siteData.siteConfig?.logo || 'assets/logo.png';
+        footerLogo.onerror = function() {
+            console.error('页脚Logo图片加载失败:', this.src);
+            this.src = 'https://via.placeholder.com/40x40/2563eb/ffffff?text=Logo';
+        };
+        
         document.getElementById('footer-title').textContent = siteData.siteConfig?.title || '智界设计';
         
         // 更新介绍文本
@@ -852,13 +881,19 @@
         
         // 更新联系方式
         if (siteData.homePage?.contact) {
-            document.getElementById('wechat-qr').src = siteData.homePage.contact.wechatQr || 'assets/qrcode.png';
+            const wechatQr = document.getElementById('wechat-qr');
+            wechatQr.src = siteData.homePage.contact.wechatQr || 'assets/qrcode.png';
+            wechatQr.onerror = function() {
+                console.error('微信二维码图片加载失败:', this.src);
+                this.src = 'https://via.placeholder.com/120x120/10b981/ffffff?text=QR';
+            };
             document.getElementById('wechat-text').textContent = siteData.homePage.contact.wechatText || '扫码添加微信咨询';
         }
     }
     
     // 显示作品
     function displayWorks(works) {
+        console.log('显示作品:', works.length, '个');
         const container = document.getElementById('works-grid');
         
         if (!works || works.length === 0) {
@@ -873,9 +908,12 @@
                 ? work.mainImage 
                 : `works/${work.folder}/${work.mainImage}`;
             
+            console.log(`作品 "${work.title}" 图片路径: ${imageSrc}`);
+            
             html += `
             <div class="grid-item" data-id="${work.id}" data-type="work">
-                <img class="item-image" src="${imageSrc}" alt="${work.title}" onerror="this.src='https://via.placeholder.com/800x600/3b82f6/ffffff?text=设计作品'">
+                <img class="item-image" src="${imageSrc}" alt="${work.title}" 
+                     onerror="console.error('作品图片加载失败:', this.src); this.src='https://via.placeholder.com/800x600/3b82f6/ffffff?text=${encodeURIComponent(work.title)}'">
                 <div class="item-content">
                     <h3 class="item-title">${work.title}</h3>
                     <p class="item-subtitle">${work.intro.substring(0, 80)}${work.intro.length > 80 ? '...' : ''}</p>
@@ -885,12 +923,14 @@
         });
         
         container.innerHTML = html;
+        console.log('作品网格已更新');
         
         // 为每个作品项添加点击事件
         document.querySelectorAll('#works-grid .grid-item').forEach(item => {
             item.addEventListener('click', function() {
                 const id = this.getAttribute('data-id');
                 const type = this.getAttribute('data-type');
+                console.log(`点击作品: ${id}, 类型: ${type}`);
                 openModal(id, type);
             });
         });
@@ -898,6 +938,7 @@
     
     // 显示文章
     function displayArticles(articles) {
+        console.log('显示文章:', articles.length, '篇');
         const container = document.getElementById('articles-grid');
         
         if (!articles || articles.length === 0) {
@@ -912,9 +953,12 @@
                 ? article.cover 
                 : `articles/${article.folder}/${article.cover}`;
             
+            console.log(`文章 "${article.title}" 封面路径: ${coverSrc}`);
+            
             html += `
             <div class="grid-item" data-id="${article.id}" data-type="article">
-                <img class="item-image" src="${coverSrc}" alt="${article.title}" onerror="this.src='https://via.placeholder.com/800x600/10b981/ffffff?text=设计文章'">
+                <img class="item-image" src="${coverSrc}" alt="${article.title}" 
+                     onerror="console.error('文章封面加载失败:', this.src); this.src='https://via.placeholder.com/800x600/10b981/ffffff?text=${encodeURIComponent(article.title)}'">
                 <div class="item-content">
                     <h3 class="item-title">${article.title}</h3>
                     <p class="item-subtitle">${article.subtitle.substring(0, 60)}${article.subtitle.length > 60 ? '...' : ''}</p>
@@ -924,12 +968,14 @@
         });
         
         container.innerHTML = html;
+        console.log('文章网格已更新');
         
         // 为每个文章项添加点击事件
         document.querySelectorAll('#articles-grid .grid-item').forEach(item => {
             item.addEventListener('click', function() {
                 const id = this.getAttribute('data-id');
                 const type = this.getAttribute('data-type');
+                console.log(`点击文章: ${id}, 类型: ${type}`);
                 openModal(id, type);
             });
         });
@@ -969,6 +1015,9 @@
     
     // 打开弹窗
     async function openModal(id, type) {
+        console.log(`========== 开始打开弹窗 ==========`);
+        console.log(`类型: ${type}, ID: ${id}`);
+        
         try {
             // 显示加载状态
             document.getElementById('modal-body').innerHTML = `
@@ -995,26 +1044,49 @@
             }
             
             if (!content) {
+                console.error(`未找到ID为"${id}"的${type === 'work' ? '作品' : '文章'}`);
                 throw new Error(`未找到ID为"${id}"的${type === 'work' ? '作品' : '文章'}`);
             }
             
-            console.log(`正在加载${type}: ${id}, folder: ${content.folder}`);
+            console.log(`找到内容:`, content);
+            console.log(`文件夹: ${folder}, 内容folder: ${content.folder}`);
             
             // 加载Markdown文件
             const mdPath = `${folder}/${content.folder}/index.md`;
             console.log(`尝试加载MD文件: ${mdPath}`);
             
+            // 测试文件是否存在
+            try {
+                const testResponse = await fetch(mdPath, { method: 'HEAD' });
+                console.log(`MD文件HEAD请求结果: ${testResponse.status} ${testResponse.statusText}`);
+            } catch (testError) {
+                console.error(`MD文件HEAD请求失败:`, testError);
+            }
+            
             const response = await fetch(mdPath);
+            console.log(`MD文件GET请求结果: ${response.status} ${response.statusText}`);
+            
             if (!response.ok) {
-                console.error(`MD文件加载失败: ${response.status} ${response.statusText}`);
-                throw new Error(`无法加载${type === 'work' ? '作品' : '文章'}详情内容`);
+                if (response.status === 404) {
+                    console.error(`MD文件不存在: ${mdPath}`);
+                    // 尝试其他可能的路径
+                    const altPath1 = `${content.folder}/index.md`;
+                    const altPath2 = `./${folder}/${content.folder}/index.md`;
+                    console.log(`尝试替代路径1: ${altPath1}`);
+                    console.log(`尝试替代路径2: ${altPath2}`);
+                }
+                throw new Error(`无法加载${type === 'work' ? '作品' : '文章'}详情内容 (${response.status})`);
             }
             
             const markdown = await response.text();
             console.log(`成功加载MD文件，长度: ${markdown.length}字符`);
+            console.log(`MD文件前200字符:`, markdown.substring(0, 200));
             
             const metadata = parseFrontMatter(markdown);
+            console.log('解析的Front Matter:', metadata);
+            
             const htmlContent = marked.parse(markdown.replace(/---[\s\S]*?---/, '').trim());
+            console.log('转换后的HTML内容长度:', htmlContent.length);
             
             // 构建弹窗内容
             if (type === 'work') {
@@ -1036,12 +1108,18 @@
                 `;
             }
             
+            console.log('弹窗内容已设置');
+            
             // 处理弹窗中的图片路径
             const modalText = document.querySelector('.modal-text');
             if (modalText) {
                 const images = modalText.querySelectorAll('img');
-                images.forEach(img => {
+                console.log(`找到 ${images.length} 张图片需要处理`);
+                
+                images.forEach((img, index) => {
                     const src = img.getAttribute('src');
+                    console.log(`图片 ${index + 1}: 原始src="${src}"`);
+                    
                     if (src && !src.includes('http') && !src.includes('data:')) {
                         // 处理相对路径的图片
                         const newSrc = `${folder}/${content.folder}/${src}`;
@@ -1059,14 +1137,23 @@
                 });
             }
             
+            console.log(`========== 弹窗加载完成 ==========`);
+            
         } catch (error) {
             console.error('加载弹窗内容失败:', error);
             document.getElementById('modal-body').innerHTML = `
                 <h1 class="modal-title">加载失败</h1>
                 <div class="modal-text">
                     <p>抱歉，无法加载请求的内容。</p>
-                    <p>错误信息: ${error.message}</p>
-                    <p>请检查控制台获取更多信息。</p>
+                    <p><strong>错误信息:</strong> ${error.message}</p>
+                    <p><strong>文件路径:</strong> ${folder}/${content?.folder}/index.md</p>
+                    <p>请检查：</p>
+                    <ol>
+                        <li>文件是否存在</li>
+                        <li>文件路径是否正确</li>
+                        <li>服务器是否允许访问该文件</li>
+                    </ol>
+                    <p>查看浏览器控制台获取更多调试信息。</p>
                     <button onclick="closeModal()" style="margin-top: 20px; padding: 10px 20px; background: var(--primary-color); color: white; border: none; border-radius: 6px; cursor: pointer;">关闭</button>
                 </div>
             `;
@@ -1077,6 +1164,7 @@
     function closeModal() {
         document.getElementById('modal-overlay').classList.remove('active');
         document.body.style.overflow = 'auto';
+        console.log('弹窗已关闭');
     }
     
     // 解析Markdown的front matter
@@ -1085,6 +1173,7 @@
         const match = markdown.match(frontMatterRegex);
         
         if (!match) {
+            console.log('未找到Front Matter，使用默认值');
             return {
                 title: '未命名',
                 subtitle: '',
